@@ -1,0 +1,57 @@
+<?php
+include_once('templates/code_for_templates/redirect_if_not_login.php');
+include_once('templates/add_edit/code_for_add_edit_templates/main_object_model.php');
+include_once('templates/elements/headher.phtml');
+include_once('templates/elements/topnav.phtml');
+include_once('templates/elements/menu.phtml');
+?>
+<div class="bg-light">
+    <div class="container-fluid">
+        <div ng-app="objectAddEditApp" ng-controller="objectAddEditController" class="row content">
+            <div class="col-sm-12 margin-top-add-edit">
+                <h1>
+                    <?php if($this->getElementId() !== null && !empty($this->getElementId())):?>
+                        <small>Edytuj Tag - id: <?php echo $this->getElementId();?></small>   
+                    <?php else:?>
+                        <small>Dodaj Tag</small>
+                    <?php endif;?>
+                    <hr>
+                </h1>
+                <form action="?action=<?php echo substr($this->getAction(), strpos($this->getAction(), '_') + 1, strlen($this->getAction()));?>" method="post">
+                    <input type="hidden" name="table" value="<?php echo substr($this->getAction(), strpos($this->getAction(), '_') + 1, strlen($this->getAction()));?>">
+                    <input type="hidden" name="arch" value="0">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <?php if($this->getElementId() !== null && !empty($this->getElementId())):?>
+                            <input type="hidden" name="id" value=<?php echo $this->getElementId();?>>
+                            <?php endif;?>
+                        </div>
+                        <div class="block-add-edit-mono">
+                            <label class="take-max-width" for="tag">Tagi</label>
+                            <?php  if(empty($_GET['id'])):?>
+                            <button class="btn btn-success" type="button" ng-click="addInputTag()"><span class="glyphicon glyphicon-plus"></span></button>
+                            <?php endif;?>
+                            <hr class="min-hr">
+                            <div ng-repeat="input_tag in input_tags track by $index" class="form-group input-group">
+                                <button ng-if="input_tags.length != 1" class="btn btn-danger input-group-button add-edit-delete-input-group-button" type="button" ng-click="deleteTag($index)"><span class="glyphicon glyphicon-minus"></span></button>
+                                <input list="tag-list" class="form-control input-group-input add-edit-only-one-input-group-input" type="text" ng-value="input_tags[$index]" ng-model="tag" ng-change="addTag(tag, $index)"  placeholder="Podaj tag..." autocomplete="off" required>
+                                <datalist id="tag-list">
+                                    <option ng-repeat="tag in tags" value="{{tag.tag}}">
+                                </datalist>
+                            </div>
+                            <br>
+                            <input type="hidden" name="tags" ng-value="all_tags">
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <button class="btn btn-success take-max-width" type="submit"><?php echo ($this->getElementId() !== null && !empty($this->getElementId())) ? "Edytuj Tag" : "Dodaj Tagi";?></button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <?php include_once('templates/add_edit/angular_script_selector/add_edit_object_app.phtml');?>
+    </div>
+</div>
+<?php include_once('templates/elements/footer.phtml');?>

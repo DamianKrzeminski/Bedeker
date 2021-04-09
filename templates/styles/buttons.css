@@ -1,0 +1,61 @@
+.button-max-space {
+    width: 100%;
+}
+
+.btn:focus {
+    outline: none !important;
+}
+
+.btn {
+    white-space: inherit !important;
+    font-size: 15px !important;
+    color: #f0f0f0 !important;
+}
+
+button.btn-primary {
+    background-color: #3E73C7 !important;
+    border-color: #22519e !important;
+}
+
+button.btn-primary:hover {
+    background-color: #22519e !important;
+}
+
+button.btn-info {
+    background-color: #3192af !important;
+    border-color: #0f6e8b !important;
+}
+
+button.btn-info:hover {
+    background-color: #0f6e8b !important;
+}
+
+button.btn-danger {
+    background-color: #db3731 !important;
+    border-color: #a8221d !important;
+}
+
+button.btn-danger:hover {
+    background-color: #a8221d !important;
+}
+
+button.btn-success {
+    background-color: #27a527 !important;
+    border-color: #248824 !important;
+}
+
+button.btn-success:hover {
+    background-color: #248824 !important;
+}
+
+.cancel-button {
+    width: 15% !important;
+}
+
+.save-button {
+    width: 15% !important;
+}
+
+.hide-button {
+    width: 20% !important;
+}

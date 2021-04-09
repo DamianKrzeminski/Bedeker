@@ -1,0 +1,445 @@
+<script>
+object_add_edit_app = angular.module("objectAddEditApp", []);
+object_add_edit_app.controller("objectAddEditController", function($scope){
+
+    $scope.object = <?php echo json_encode($object);?>;
+    $scope.clients = <?php echo (isset($clients) && !empty($clients)) ? json_encode($clients) : json_encode('');?>;
+    $scope.tags = <?php echo (isset($tags) && !empty($tags)) ? json_encode($tags) : json_encode('');?>;
+    $scope.new_client;
+    $scope.input_operator_phones = [''];
+    $scope.input_operator_names = [''];
+    $scope.input_operator_contacts = [''];
+    $scope.input_local_phones = [''];
+    $scope.input_local_names = [''];
+    $scope.input_local_contacts = [''];
+    $scope.input_users = [''];
+    $scope.input_passwords = [''];
+    $scope.input_ips = [''];
+    $scope.input_operators = [''];
+    $scope.input_downs = [''];
+    $scope.input_ups = [''];
+    $scope.input_types = [''];
+    $scope.input_tags = [''];
+    $scope.new_tags = [];
+    $scope.input_phones = [''];
+    $scope.input_mobile_phones = [''];
+    $scope.input_emails = [''];
+    $scope.input_server_roles = [''];
+    $scope.role = 'Oddział';
+    $scope.state = 'Monitorowany';
+    $scope.server_type = 'Kontener';
+    $scope.privilege = 'Użytkownik';   
+
+    $scope.checkIfItIsNewClient = function(){
+        if($scope.clients.indexOf($scope.client) == -1){
+            $scope.new_client = $scope.client;
+        }
+        $scope.addTag($scope.client, 0);     
+    }
+
+    $scope.addInputTag = function(){
+        $scope.input_tags.push('');
+    }
+
+    $scope.addTag = function(tag, index){
+        deleteNewTag($scope.input_tags[index]);
+        $scope.input_tags[index] = tag;
+        prepareTag();
+        checkItIsNewTag(tag, index);
+    }
+
+    deleteNewTag = function(tag){
+        position = $scope.new_tags.indexOf(tag)
+        if(position != -1){
+            $scope.new_tags.splice(position, 1);
+            prepareNewTags();
+        }
+    }
+
+    prepareTag = function(){
+        $scope.all_tags = $scope.input_tags.join(";");
+        $scope.all_tags = ";"+$scope.all_tags+";";
+    }
+
+    checkItIsNewTag = function(tag, index){
+        if($scope.tags.indexOf(tag) == -1 && $scope.new_tags.indexOf(tag) == -1){
+            $scope.new_tags.push(tag);
+            prepareNewTags();
+        }
+    }
+
+    prepareNewTags = function(){
+        $scope.all_new_tags = $scope.new_tags.join(";");
+        $scope.all_new_tags = ";"+$scope.all_new_tags+";";
+    }
+
+    $scope.deleteTag = function(index){
+        deleteNewTag($scope.input_tags[index]);
+        $scope.input_tags.splice(index, 1);
+        prepareTag();
+    }
+
+    $scope.addOperatorContact = function(){
+        $scope.input_operator_contacts.push('');
+        $scope.input_operator_phones.push('');
+        $scope.input_operator_names.push('');
+    }
+
+    $scope.addOperatorPhone = function(operator_phone, index){
+        $scope.input_operator_phones[index] = operator_phone;
+        prepareOperatorContacts();
+    }
+
+    $scope.addOperatorName = function(operator_name, index){
+        $scope.input_operator_names[index] = operator_name;
+        prepareOperatorContacts();
+    }
+
+    $scope.deleteOperatorContact = function(index){
+        $scope.input_operator_contacts.splice(index, 1);
+        $scope.input_operator_phones.splice(index, 1);
+        $scope.input_operator_names.splice(index, 1);
+        prepareOperatorContacts();
+    }
+
+    prepareOperatorContacts = function(){
+        for(var i=0;i<$scope.input_operator_phones.length;i++){
+            $scope.input_operator_contacts[i] = $scope.input_operator_phones[i]+" - "+$scope.input_operator_names[i];
+        }
+        $scope.operatorContacts = $scope.input_operator_contacts.join(";");
+        $scope.operatorContacts = ";"+$scope.operatorContacts+";";
+    }
+
+    $scope.addLocalContact = function(){
+        $scope.input_local_contacts.push('');
+        $scope.input_local_phones.push('');
+        $scope.input_local_names.push('');
+    }
+
+    $scope.addLocalPhone = function(local_phone, index){
+        $scope.input_local_phones[index] = local_phone;
+        prepareLocalContacts();
+    }
+
+    $scope.addLocalName = function(local_name, index){
+        $scope.input_local_names[index] = local_name;
+        prepareLocalContacts();
+    }
+
+    $scope.deleteLocalContact = function(index){
+        $scope.input_local_contacts.splice(index, 1);
+        $scope.input_local_phones.splice(index, 1);
+        $scope.input_local_names.splice(index, 1);
+        prepareLocalContacts();
+    }
+
+    prepareLocalContacts = function(){
+        for(var i=0;i<$scope.input_local_phones.length;i++){
+            $scope.input_local_contacts[i] = $scope.input_local_phones[i]+" - "+$scope.input_local_names[i];
+        }
+        $scope.localContacts = $scope.input_local_contacts.join(";");
+        $scope.localContacts = ";"+$scope.localContacts+";";
+    }
+
+    $scope.addUserPasswordInput = function(){
+        $scope.input_users.push('');
+        $scope.input_passwords.push('');
+    }
+
+    $scope.addUser = function(user, index){
+        $scope.input_users[index] = user;
+        prepareUser();
+    }
+
+    $scope.addPassword = function(password, index){
+        $scope.input_passwords[index] = password;
+        preparePassword();
+    }
+
+    $scope.deleteUserPassword = function(index){
+        $scope.input_users.splice(index, 1);
+        $scope.input_passwords.splice(index, 1);
+        prepareUser();
+        preparePassword();
+    }
+
+    prepareUser = function(){
+        $scope.users = $scope.input_users.join(";");
+        $scope.users = ";"+$scope.users+";";
+    }
+
+    preparePassword = function(){
+        $scope.passwords = $scope.input_passwords.join(";");
+        $scope.passwords = ";"+$scope.passwords+";";
+    }
+
+    $scope.addIpOperatorDownUpTypeInput = function(){
+        $scope.addIpInput();
+        $scope.addOperatorInput();
+        $scope.addDownInput();
+        $scope.addUpInput();
+        $scope.addTypeInput();
+    }
+
+    $scope.addIpInput = function(){
+        $scope.input_ips.push('');
+    }
+
+    $scope.addOperatorInput = function(){
+        $scope.input_operators.push('');
+    }
+
+    $scope.addDownInput = function(){
+        $scope.input_downs.push('');
+    }
+
+    $scope.addUpInput = function(){
+        $scope.input_ups.push('');
+    }
+
+    $scope.addTypeInput = function(){
+        $scope.input_types.push('');
+    }
+
+    $scope.addIp = function(ip, index){
+        $scope.input_ips[index] = ip;
+        prepareIp();
+    }
+
+    $scope.addOperator = function(operator, index){
+        $scope.input_operators[index] = operator;
+        prepareOperator();
+    }
+
+    $scope.addDown = function(down, index){
+        $scope.input_downs[index] = down;
+        prepareDown();
+    }
+
+    $scope.addUp = function(up, index){
+        $scope.input_ups[index] = up;
+        prepareUp();
+    }
+
+    $scope.addType = function(type, index){
+        $scope.input_types[index] = type;
+        prepareType();
+    }
+
+    $scope.deleteIpOperatorDownUpType = function(index){
+        $scope.deleteIp(index);
+        $scope.deleteOperator(index);
+        $scope.deleteDown(index);
+        $scope.deleteUp(index);
+        $scope.deleteType(index);
+    }
+
+    $scope.deleteIp = function(index){
+        $scope.input_ips.splice(index, 1);
+        prepareIp();
+    }
+
+    $scope.deleteOperator = function(index){
+        $scope.input_operators.splice(index, 1);
+        prepareOperator();
+    }
+
+    $scope.deleteDown = function(index){
+        $scope.input_downs.splice(index, 1);
+        prepareDown();
+    }
+
+    $scope.deleteUp = function(index){
+        $scope.input_ups.splice(index, 1);
+        prepareUp();
+    }
+
+    $scope.deleteType = function(index){
+        $scope.input_types.splice(index, 1);
+        prepareType();
+    }
+
+    prepareIp = function(){
+        $scope.ips = $scope.input_ips.join(";");
+        $scope.ips = ";"+$scope.ips+";";
+    }
+
+    prepareOperator = function(){
+        $scope.operators = $scope.input_operators.join(";");
+        $scope.operators = ";"+$scope.operators+";";
+    }
+
+    prepareDown = function(){
+        $scope.downs = $scope.input_downs.join(";");
+        $scope.downs = ";"+$scope.downs+";";
+    }
+
+    prepareUp = function(){
+        $scope.ups = $scope.input_ups.join(";");
+        $scope.ups = ";"+$scope.ups+";";
+    }
+
+    prepareType = function(){
+        $scope.types = $scope.input_types.join(";");
+        $scope.types = ";"+$scope.types+";";
+    }
+
+    $scope.addPhone = function(){
+        $scope.input_phones.push('');
+    }
+
+    $scope.addPhoneNumber = function(phone, index){
+        $scope.input_phones[index] = phone;
+        preparePhone();
+    }
+
+    $scope.deletePhone = function(index){
+        $scope.input_phones.splice(index, 1);
+        preparePhone();
+    }
+
+    preparePhone = function(){
+        $scope.phones = $scope.input_phones.join(";");
+        $scope.phones = ";"+$scope.phones+";";
+    }
+
+    $scope.addMobilePhone = function(){
+        $scope.input_mobile_phones.push('');
+    }
+
+    $scope.addMobilePhoneNumber = function(mobile_phone, index){
+        $scope.input_mobile_phones[index] = mobile_phone;
+        prepareMobilePhone();
+    }
+
+    $scope.deleteMobilePhone = function(index){
+        $scope.input_mobile_phones.splice(index, 1);
+        prepareMobilePhone();
+    }
+
+    prepareMobilePhone = function(){
+        $scope.mobile_phones = $scope.input_mobile_phones.join(";");
+        $scope.mobile_phones = ";"+$scope.mobile_phones+";";
+    }
+
+    $scope.addEmail = function(){
+        $scope.input_emails.push('');
+    }
+
+    $scope.addEmailName = function(email, index){
+        $scope.input_emails[index] = email;
+        prepareEmail();
+    }
+
+    $scope.deleteEmail = function(index){
+        $scope.input_emails.splice(index, 1);
+        prepareEmail();
+    }
+
+    prepareEmail = function(){
+        $scope.emails = $scope.input_emails.join(";");
+        $scope.emails = ";"+$scope.emails+";";
+    }
+
+    $scope.addServerRoleInput = function(){
+        $scope.input_server_roles.push('');
+    }
+
+    $scope.addServerRole = function(server_role, index){
+        $scope.input_server_roles[index] = server_role;
+        prepareServerRole();
+    }
+
+    $scope.deleteServerRole = function(index){
+        $scope.input_server_roles.splice(index, 1);
+        prepareServerRole();
+    }
+
+    prepareServerRole = function(){
+        $scope.server_roles = $scope.input_server_roles.join(";");
+        $scope.server_roles = ";"+$scope.server_roles+";";
+    }
+
+    if($scope.object){
+        if($scope.object['operator_contact']){
+            $scope.input_operator_contacts = $scope.object['operator_contact'].split(";");
+            for(var operator_contact in $scope.input_operator_contacts){
+                contact = $scope.input_operator_contacts[operator_contact].split(" - ");
+                $scope.input_operator_phones[operator_contact] = contact[0];
+                $scope.input_operator_names[operator_contact] = contact[1];
+            }
+            prepareOperatorContacts();
+        }
+        if($scope.object['local_contact']){
+            $scope.input_local_contacts = $scope.object['local_contact'].split(";");
+            for(var local_contact in $scope.input_local_contacts){
+                contact = $scope.input_local_contacts[local_contact].split(" - ");
+                $scope.input_local_phones[local_contact] = contact[0];
+                $scope.input_local_names[local_contact] = contact[1];
+            }
+            prepareLocalContacts();
+        }
+        if($scope.object['user']){
+            $scope.input_users = $scope.object['user'].split(";");
+            prepareUser();
+        }
+        if($scope.object['password']){
+            $scope.input_passwords = $scope.object['password'].split(";");
+            preparePassword();
+        }
+        if($scope.object['ip']){
+            $scope.input_ips = $scope.object['ip'].split(";");
+            prepareIp();
+        }
+        if($scope.object['operator']){
+            $scope.input_operators = $scope.object['operator'].split(";");
+            prepareOperator();
+        }
+        if($scope.object['down']){
+            $scope.input_downs = $scope.object['down'].split(";");
+            prepareDown();
+        }
+        if($scope.object['up']){
+            $scope.input_ups = $scope.object['up'].split(";");
+            prepareUp();
+        }
+        if($scope.object['type']){
+            $scope.input_types = $scope.object['type'].split(";");
+            prepareType();
+        }
+        if($scope.object['tag']){
+            $scope.input_tags = $scope.object['tag'].split(";");
+            prepareTag();
+        }
+        if($scope.object['phone']){
+            $scope.input_phones = $scope.object['phone'].split(";");
+            preparePhone();
+        }
+        if($scope.object['mobile_phone']){
+            $scope.input_mobile_phones = $scope.object['mobile_phone'].split(";");
+            prepareMobilePhone();
+        }
+        if($scope.object['email']){
+            $scope.input_emails = $scope.object['email'].split(";");
+            prepareEmail();
+        }
+        if($scope.object['server_role']){
+            $scope.input_server_roles = $scope.object['server_role'].split(";");
+            prepareServerRole();
+        }
+        $scope.firstname = $scope.object['firstname'];
+        $scope.lastname = $scope.object['lastname'];
+        $scope.client = $scope.object['client'];
+        $scope.location = $scope.object['location'];
+        $scope.model = $scope.object['model'];
+        $scope.snmp_password = $scope.object['snmp_password'];
+        $scope.role = $scope.object['role'];
+        $scope.state = $scope.object['state'];
+        $scope.server_type = $scope.object['server_type'];
+        $scope.operation_system = $scope.object['operation_system'];
+        $scope.login = $scope.object['login'];
+        $scope.privilege = $scope.object['privilege'];
+        $scope.user_email = $scope.object['email'];
+    }
+});
+</script>

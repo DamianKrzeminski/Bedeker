@@ -1,0 +1,107 @@
+
+<?php
+include_once('templates/code_for_templates/redirect_if_not_login.php');
+include_once('templates/lists/code_for_lists_templates/main_object_model.php');
+include_once('templates/code_for_templates/client_model.php');
+include_once('templates/elements/headher.phtml');
+include_once('templates/elements/topnav.phtml');
+include_once('templates/elements/menu.phtml');
+?>
+<div class="bg-light">
+    <div class="container-fluid">
+        <div ng-app="listObjectApp" ng-controller="listObjectControler" class="row content">
+            <div class="col-sm-12">
+                <h1>
+                    <small>Klienci - wszyscy (<text ng-bind="objects.length"></text>)</small>
+                    <hr>
+                </h1>
+                <?php include_once('templates/lists/elements/advanced_search.phtml');?>
+                <div class="col-sm-2">
+                    <a href="?action=add_clients">
+                        <button class="btn btn-success" title="Dodaj Klienta">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </button>
+                    </a>
+                </div>
+                <div class="col-sm-2"></div>
+                <div class="col-sm-2"></div>
+                <div class="col-sm-2"></div>
+                <div class="col-sm-2">
+                    <select class="form-control choose-table-content" ng-model="object_table_content" ng-change="changeObjectTableContent(object_table_content)">
+                        <option value="allObjects">Wszyscy Klienci</option>
+                        <option value="archObjects">Archiwalni Klienci</option>
+                        <option value="inUseObjects">Aktywni Klienci</option>
+                    </select>
+                </div>
+                <div class="search-padding">
+                </div>
+                <div class="col-sm-2">
+                        <input list="client-list" ng-model="searchClient" class="form-control" type="text" placeholder="Szukaj Klienta..." title="Szukaj Klienta...">
+                        <datalist id="client-list">
+                            <option ng-repeat="client in clients" value="{{object.client}}">
+                        </datalist>
+                    </div>
+                
+                <div class="search-padding">
+                </div>
+            </div>
+            <div class="col-sm-10">
+                <table class="table table-hover table-bordered table-cells text-center-and-middle">       
+                    <thead>
+                        <tr class="th-main">
+                            <th class="take-content-size-of-cell">ID</th>
+                            <th ng-click="orderByMe('client')" title="Sortuj według klientów">Klient</th>
+                            <th>Routery</th>
+                            <th>Serwery</th>
+                            <th>Dane Kontaktowe</th>
+                            <th colspan="2" class="take-content-size-of-cell">Akcje</th>
+                        </tr>  
+                    </thead>
+                    <tbody ng-repeat="object in objects | filter: {client: searchClient } | orderBy: 'client' | orderBy: objectOrderBy">
+                        <tr>
+                            <th scope="row" ng-bind="$index+1"></th>
+                            <td ng-bind="object.client"></td>
+                            <td>
+                                <a href="?action=routers&client={{object.client}}">
+                                    <button class="btn btn-primary" type="button">Routery</button>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="?action=servers&client={{object.client}}">
+                                    <button class="btn btn-primary" type="button">Serwery</button>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="?action=contact_details&client={{object.client}}">
+                                    <button class="btn btn-primary" type="button">Dane Kontaktowe</button>
+                                </a>
+                            </td>
+                            <td class="take-content-size-of-cell ">
+                                <a ng-if="object.arch == 1" href="?action=restore_clients&id={{object.id}}">
+                                    <button ng-if="object.arch == 1" type="button" class="btn btn-info" title="Przywróć">
+                                        <span ng-if="object.arch == 1" class="glyphicon glyphicon-share-alt"></span>
+                                    </button>
+                                </a>
+                                <a ng-if="object.arch == 0" href="?action=edit_clients&id={{object.id}}">
+                                    <button ng-if="object.arch == 0" type="button" class="btn btn-info" title="Edytuj">
+                                        <span ng-if="object.arch == 0" class="glyphicon glyphicon-pencil"></span>
+                                    </button>
+                                </a>
+                            </td>
+                            <td class="take-content-size-of-cell ">
+                                <button ng-if="object.arch == 0" ng-click="archObjectAlert(object.id)" type="button" class="btn btn-danger" title="Archiwizuj">
+                                    <span ng-if="object.arch == 0" class="glyphicon glyphicon-share-alt"></span>
+                                </button>
+                                <button ng-if="object.arch == 1" ng-click="deleteObjectAlert(object.id)" type="button" class="btn btn-danger" title="Usuń">
+                                    <span ng-if="object.arch == 1" class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <?php include_once('templates/lists/angular_script_selector/list_object_app.phtml');?>
+        </div>
+    </div>
+</div>
+<?php include_once('templates/elements/footer.phtml');?>

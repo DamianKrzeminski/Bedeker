@@ -1,0 +1,58 @@
+<div class="sidenav">
+    <ul class="nav nav-pills nav-stacked">
+        <li <?php echo (isset($_GET['action']) && $_GET['action'] == 'home' ? 'class="active no-hover"' : 'class="menu-hover"');?>>
+            <a href="?action=home"><span class="glyphicon glyphicon-home"></span>   Home</a>
+        </li>
+        <li <?php echo (isset($_GET['action']) && $_GET['action'] == 'routers' ? 'class="active no-hover"' : 'class="menu-hover"');?>>
+            <a href="?action=routers"><span class="glyphicon glyphicon-hdd"></span>   Routery</a>
+        </li>
+        <?php if(isset($_GET['action']) && ($_GET['action'] == "routers" || $_GET['action'] == "add_routers")):?>
+            <li <?php echo (isset($_GET['action']) && $_GET['action'] == 'add_routers' ? 'class="active no-hover"' : 'class="menu-hover"');?>>
+                <a href="?action=add_routers"><span class="glyphicon glyphicon-plus"></span>   Dodaj Router</a>
+            </li>
+        <?php endif;?>
+        <li <?php echo (isset($_GET['action']) && $_GET['action'] == 'servers' ? 'class="active no-hover"' : 'class="menu-hover"');?>>
+            <a href="?action=servers"><span class="glyphicon glyphicon-tasks"></span>   Serwery</a>
+        </li>
+        <?php if(isset($_GET['action']) && ($_GET['action'] == "servers" || $_GET['action'] == "add_servers")):?>
+            <li <?php echo (isset($_GET['action']) && $_GET['action'] == 'add_servers' ? 'class="active no-hover"' : 'class="menu-hover"');?>>
+                <a href="?action=add_servers"><span class="glyphicon glyphicon-plus"></span>   Dodaj Serwery</a>
+            </li>
+        <?php endif;?>
+        <li <?php echo (isset($_GET['action']) && $_GET['action'] == 'contact_details' ? 'class="active no-hover"' : 'class="menu-hover"');?>>
+            <a href="?action=contact_details"><span class="glyphicon glyphicon-phone-alt"></span>   Dane Kontaktowe</a>
+        </li>
+        <?php if(isset($_GET['action']) && ($_GET['action'] == "contact_details" || $_GET['action'] == "add_contact_details")):?>
+            <li <?php echo (isset($_GET['action']) && $_GET['action'] == 'add_contact_details' ? 'class="active no-hover"' : 'class="menu-hover"');?>>
+                <a href="?action=add_contact_details"><span class="glyphicon glyphicon-plus"></span>   Dodaj Dane Kontaktowe</a>
+            </li>
+        <?php endif;?>
+        <li <?php echo (isset($_GET['action']) && $_GET['action'] == 'clients' ? 'class="active no-hover"' : 'class="menu-hover"');?>>
+            <a href="?action=clients"><span class="glyphicon glyphicon-user"></span>   Klienci</a>
+        </li>
+        <?php if(isset($_GET['action']) && ($_GET['action'] == "clients" || $_GET['action'] == "add_clients")):?>
+            <li <?php echo (isset($_GET['action']) && $_GET['action'] == 'add_clients' ? 'class="active no-hover"' : 'class="menu-hover"');?>>
+                <a href="?action=add_clients"><span class="glyphicon glyphicon-plus"></span>   Dodaj Klienta</a>
+            </li>
+        <?php endif;?>
+        <li <?php echo (isset($_GET['action']) && $_GET['action'] == 'procedures' ? 'class="active no-hover"' : 'class="menu-hover"');?>>
+            <a href="?action=procedures"><span class="glyphicon glyphicon-briefcase"></span>   Procedury</a>
+        </li>
+        <li <?php echo (isset($_GET['action']) && $_GET['action'] == 'tags' ? 'class="active no-hover"' : 'class="menu-hover"');?>>
+            <a href="?action=tags"><span class="glyphicon glyphicon-tags"></span>   Tagi</a>
+        </li>
+        <?php if(isset($_GET['action']) && ($_GET['action'] == "tags" || $_GET['action'] == "add_tags")):?>
+            <li <?php echo (isset($_GET['action']) && $_GET['action'] == 'add_tags' ? 'class="active no-hover"' : 'class="menu-hover"');?>>
+                <a href="?action=add_tags"><span class="glyphicon glyphicon-plus"></span>   Dodaj Tagi</a>
+            </li>
+        <?php endif;?>
+        <li <?php echo (isset($_GET['action']) && $_GET['action'] == 'users' ? 'class="active no-hover"' : 'class="menu-hover"');?>>
+            <a href="?action=users"><span class="glyphicon glyphicon-user"></span>   Użytkownicy</a>
+        </li>
+        <?php if(isset($_GET['action']) && ($_GET['action'] == "users" || $_GET['action'] == "add_users")):?>
+            <li <?php echo (isset($_GET['action']) && $_GET['action'] == 'add_users' ? 'class="active no-hover"' : 'class="menu-hover"');?>>
+                <a href="?action=add_users"><span class="glyphicon glyphicon-plus"></span>   Dodaj Użytkownika</a>
+            </li>
+        <?php endif;?>
+    </ul>
+</div>

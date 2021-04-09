@@ -1,0 +1,128 @@
+<?php
+include_once('templates/code_for_templates/redirect_if_not_login.php');
+include_once('templates/lists/code_for_lists_templates/main_object_model.php');
+include_once('templates/code_for_templates/tag_model.php');
+include_once('templates/elements/headher.phtml');
+include_once('templates/elements/topnav.phtml');
+include_once('templates/elements/menu.phtml');
+?>
+<div class="bg-light">
+    <div class="container-fluid">
+        <div ng-app="procedureApp" ng-controller="procedureControler" class="row content">
+        <div class="col-sm-12">
+            <h1>
+                <small>Procedury - wszystkie (<text ng-bind="procedures.length"></text>)</small>
+                <hr>
+            </h1>
+        </div>
+            <div class="col-sm-6">
+                <div class="col-sm-4">
+                    <a href="?action=search&search_item=procedures">
+                        <button class="btn btn-primary button-max-space" title="Wyszukiwanie Zaawansowane">Wyszukiwanie Zaawansowane</button>
+                    </a>
+                </div>
+                <div class="col-sm-2">
+                    <button class="btn btn-success" ng-click="addProcedure()" title="Dodaj Użytkownika">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                </div>
+                <div class="col-sm-2"></div>
+                <div class="col-sm-4">
+                    <select class="form-control choose-table-content" ng-model="procedure_table_content" ng-change="changeProcedureTableContent(procedure_table_content)">
+                        <option value="allProcedures">Wszystkie Procedury</option>
+                        <option value="archProcedures">Archiwalne Procedury</option>
+                        <option value="inUseProcedures">Używane Procedury</option>
+                    </select>
+                </div>
+                <div class="search-padding">
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-3">
+                        <input ng-model="searchSubject" class="form-control" type="text" placeholder="Szukaj Tytuł..." title="Szukaj Tytułu...">
+                    </div>
+                </div>
+                <div class="search-padding">
+                </div>
+                <table class="table table-hover table-bordered table-cells text-center-and-middle">       
+                    <thead>
+                        <tr class="th-main">
+                            <th class="take-content-size-of-cell">ID</th>
+                            <th>Autor</th>
+                            <th ng-click="orderByMe('subject')" title="Sortuj według tytułów">Tytuł</th>
+                            <th>Data</th>
+                            <th colspan="3" class="take-content-size-of-cell">Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody ng-repeat="procedure in procedures | filter: {subject: searchSubject} | orderBy: 'subject' | orderBy: procedureOrderBy">
+                        <tr>
+                            <th scope="row" ng-bind="index+1"></th>
+                            <td ng-bind="procedure.author"></td>
+                            <td ng-bind="procedure.subject"></td>
+                            <td ng-bind="procedure.date"></td>
+                            <td class="take-content-size-of-cell ">
+                                <button type="button" class="btn btn-primary" ng-click="showProcedure(procedure.path, procedure.subject)" title="Pokaż">
+                                    <span class="glyphicon glyphicon-eye-open"></span>
+                                </button>
+                            </td>
+                            <td class="take-content-size-of-cell ">
+                                <button ng-if="procedure.arch == 0" type="button" class="btn btn-info" ng-click="editProcedure(procedure.path, procedure.subject, procedure.id, procedure.tag)" title="Edytuj">
+                                    <span ng-if="procedure.arch == 0" class="glyphicon glyphicon-pencil"></span>
+                                </button>
+                                <a ng-if="procedure.arch == 1" href="?action=restore_procedures&id={{procedure.id}}">
+                                    <button ng-if="procedure.arch == 1" type="button" class="btn btn-info" title="Przywróć">
+                                        <span ng-if="procedure.arch == 1" class="glyphicon glyphicon-share-alt"></span>
+                                    </button>
+                                </a>
+                            </td>
+                            <td class="take-content-size-of-cell ">
+                            <button ng-if="procedure.arch == 0" ng-click="archProcedureAlert(procedure.id)" type="button" class="btn btn-danger" title="Archiwizuj">
+                                    <span ng-if="procedure.arch == 0" class="glyphicon glyphicon-share-alt"></span>
+                                </button>
+                                <button ng-if="procedure.arch == 1" ng-click="deleteProcedureAlert(procedure.id, procedure.subject)" type="button" class="btn btn-danger" title="Usuń">
+                                    <span ng-if="procedure.arch == 1" class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-6 take-55-height">    
+                <form class="take-max-height" action="?action=procedures"  method="post">
+                    <div ng-if="add_edit_procedure || show_procedure" class="form-group input-group take-max-width">
+                        <input class="form-control input-group-input subject-input" ng-if="add_edit_procedure" type="text" name="subject" ng-model="subject" title="Tytuł" placeholder="Wprowadź tytuł procedury" required>
+                        <button class="form-control btn btn-danger input-group-button cancel-button" ng-if="add_edit_procedure" ng-click="cancelEditProcedure()" type="button">Anuluj</button>
+                        <button class="form-control btn btn-primary input-group-button save-button" ng-if="add_edit_procedure" type="submit">Zapisz</button>
+                        <input class="form-control input-group-input subject-input" ng-if="show_procedure" type="text" ng-model="subject" title="Tytuł">
+                        <button ng-if="show_procedure" class="form-control input-group-button btn btn-danger hide-button" ng-click="cancelShowProcedure()" type="button">Ukryj</button>
+                    </div>
+                    <div ng-if="add_edit_procedure" class="block-add-edit-mono">
+                        <label ng-if="add_edit_procedure" class="take-max-width" for="tag">Tagi</label>
+                        <button ng-if="add_edit_procedure" class="btn btn-success" type="button" ng-click="addInputTag()"><span class="glyphicon glyphicon-plus"></span></button>
+                        <hr ng-if="add_edit_procedure" class="min-hr">
+                        <div ng-if="add_edit_procedure" ng-repeat="input_tag in input_tags track by $index" class="form-group input-group">
+                            <button ng-if="input_tags.length != 1 && add_edit_procedure" class="btn btn-danger input-group-button add-edit-delete-input-group-button" type="button" ng-click="deleteTag($index)"><span class="glyphicon glyphicon-minus"></span></button>
+                            <input ng-if="add_edit_procedure" list="tag-list" class="form-control input-group-input add-edit-only-one-input-group-input" type="text" ng-value="input_tags[$index]" ng-model="tag" ng-change="addTag(tag, $index)"  placeholder="Podaj tag..." autocomplete="off" required>
+                            <datalist ng-if="add_edit_procedure" id="tag-list">
+                                <option ng-repeat="tag in tags" value="{{tag.tag}}">
+                            </datalist>
+                        </div>
+                        <br>
+                        <input type="hidden" name="tag" ng-value="all_tags">
+                    </div>
+                    <input type="hidden" name="table" value="procedures">
+                    <input type="hidden" name="arch" value="0">
+                    <input type="hidden" name="id" ng-value="id">
+                    <input type="hidden" name="author" value="<?php echo $this->getLogin();?>">
+                    <input type="hidden" name="date" value="<?php echo date("Y-m-d H:i:s");?>">
+                    <input type="hidden" name="path" ng-value="path">
+                    <input type="hidden" name="new_tags" ng-value="all_new_tags">
+                    <textarea ng-if="add_edit_procedure" ckeditor id="editor" ng-model="procedure_content" name="content"></textarea>
+                    <p class="show-procedure" ng-if="show_procedure" ng-bind-html="procedure_content"></p>
+                </form>
+                
+            </div>
+            <?php include_once('templates/lists/angular_script_selector/procedures_app.phtml');?>
+        </div>
+    </div>
+</div>
+<?php include_once('templates/elements/footer.phtml');?>

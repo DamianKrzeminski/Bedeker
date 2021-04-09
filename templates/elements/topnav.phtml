@@ -1,0 +1,24 @@
+
+    <nav class="navbar navbar-fixed-top">
+        <ul class="nav nav-pills nav-stacked nav-header">
+            <li>
+                <a href="https://www.cirrus.pl/">Cirrus</a>
+            </li>
+        </ul>
+        <ul class="nav navbar-right">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toogle" data-toggle="dropdown" aria-expanded="false">
+                        <span class="glyphicon glyphicon-user"></span>   <?php echo $this->getLogin();?>   <span class="glyphicon glyphicon-triangle-bottom"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="?action=profile"><span class="glyphicon glyphicon-user"></span>   Profile</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="?action=logout"><span class="glyphicon glyphicon-log-out"></span>   Logout</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>

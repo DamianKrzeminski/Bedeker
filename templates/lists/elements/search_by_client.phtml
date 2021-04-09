@@ -1,0 +1,16 @@
+<div class="col-sm-2">
+    <form action="" method="get">
+        <input type="hidden" name="action" value="<?php echo $this->getAction();?>">
+        <div class="input-group">
+            <input class="form-control input-group-input" list="client-list" type="text" name="client" placeholder="Wybierz Klienta" title="Wybierz Klienta">
+            <datalist id="client-list">
+                <option ng-repeat="client in clients" value="{{client.client}}">
+            </datalist>
+            <div class="input-group-append">
+                <button class="btn btn-primary input-group-button list-input-group-button" type="submit" title="Szukaj">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

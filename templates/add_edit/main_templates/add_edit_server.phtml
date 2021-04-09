@@ -1,0 +1,136 @@
+<?php
+include_once('templates/code_for_templates/redirect_if_not_login.php');
+include_once('templates/add_edit/code_for_add_edit_templates/main_object_model.php');
+include_once('templates/code_for_templates/client_model.php');
+include_once('templates/code_for_templates/tag_model.php');
+include_once('templates/elements/headher.phtml');
+include_once('templates/elements/topnav.phtml');
+include_once('templates/elements/menu.phtml');
+?>
+<div class="bg-light">
+    <div class="container-fluid">
+        <div ng-app="objectAddEditApp" ng-controller="objectAddEditController" class="row content">
+            <div class="col-sm-12">
+                <h1>
+                    <?php if($this->getElementId() !== null && !empty($this->getElementId())):?>
+                        <small>Edytuj Serwer - id: <?php echo $this->getElementId();?></small>   
+                    <?php else:?>
+                        <small>Dodaj Serwer</small>
+                    <?php endif;?>
+                    <hr>
+                </h1>
+                <form action="?action=<?php echo substr($this->getAction(), strpos($this->getAction(), '_') + 1, strlen($this->getAction()));?>" method="post">
+                    <input type="hidden" name="table" value="<?php echo substr($this->getAction(), strpos($this->getAction(), '_') + 1, strlen($this->getAction()));?>">
+                    <input type="hidden" name="arch" value="0">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <?php if($this->getElementId() !== null && !empty($this->getElementId())):?>
+                            <input type="hidden" name="id" value="<?php echo $this->getElementId();?>">
+                            <?php endif;?>
+                            <label for="client">Klient</label>
+                            <input list="client-list" class="form-control" type="text" name="client" ng-model="client" ng-change="checkIfItIsNewClient()" placeholder="Podaj klienta..." autocomplete="off" required>
+                            <datalist id="client-list">
+                                <option ng-repeat="client in clients" value="{{client.client}}">
+                            </datalist>
+                        </div>
+                        <div class="form-group">
+                            <label for="location">Lokalizacja</label>
+                            <input class="form-control" type="text" name="location" ng-model="location" placeholder="Podaj lokalizację..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="operation_system">System operacyjny</label>
+                            <input class="form-control" type="text" name="operation_system" ng-model="operation_system" placeholder="Podaj System operacyjny serwera..." required> 
+                        </div>
+                        <div class="block-add-edit-poli">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="server_type">Typ serwera</label>
+                                    <select name="server_type" id="server_type" class="form-control" ng-model="server_type">
+                                        <option value="Fizyczny">Fizyczny</option>
+                                        <option value="Wirtualny">Wirtualny</option>
+                                        <option value="Kontener">Kontener</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="state">Status monitoringu</label>
+                                    <select name="state" id="state" class="form-control" ng-model="state">
+                                        <option value="Monitorowany">Monitorowany</option>
+                                        <option value="Niemonitorowany">Niemonitorowany</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="block-add-edit-poli">
+                            <div class="col-sm-12">
+                            <label class="take-max-width" for="server_role">Rola</label>
+                            <button class="btn btn-success" type="button" ng-click="addServerRoleInput()"><span class="glyphicon glyphicon-plus"></span></button>
+                            <hr class="min-hr">
+                                <div ng-repeat="input_server_role in input_server_roles track by $index" class="form-group input-group">
+                                    <button ng-if="input_server_roles.length != 1" class="btn btn-danger input-group-button add-edit-delete-input-group-button" type="button" ng-click="deleteServerRole($index)"><span class="glyphicon glyphicon-minus"></span></button>
+                                    <input class="form-control input-group-input add-edit-only-one-input-group-input" type="text" ng-value="input_server_roles[$index]" ng-model="server_role" ng-change="addServerRole(server_role, $index)" ng-model-options="{allowInvalid: true }" placeholder="Podaj role serwera..." required>
+                                </div>
+                                <input type="hidden" name="server_role" ng-value="server_roles">
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <button class="btn btn-success take-max-width" type="submit"><?php echo ($this->getElementId() !== null && !empty($this->getElementId())) ? "Edytuj Serwer" : "Dodaj Serwer";?></button>
+                                    <input type="hidden" name="new_client" ng-value="new_client">
+                                    <input type="hidden" name="new_tags" ng-value="all_new_tags">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="block-add-edit-poli">
+                            <div class="col-sm-12">
+                            <label class="take-max-width" for="ip">IP</label>
+                            <button class="btn btn-success" type="button" ng-click="addIpInput()"><span class="glyphicon glyphicon-plus"></span></button>
+                            <hr class="min-hr">
+                                <div ng-repeat="input_ip in input_ips track by $index" class="form-group input-group">
+                                    <button ng-if="input_ips.length != 1" class="btn btn-danger input-group-button add-edit-delete-input-group-button" type="button" ng-click="deleteIp($index)"><span class="glyphicon glyphicon-minus"></span></button>
+                                    <input class="form-control input-group-input add-edit-only-one-input-group-input" type="text" ng-value="input_ips[$index]" ng-model="ip" ng-change="addIp(ip, $index)" ng-model-options="{allowInvalid: true }" placeholder="Podaj IP serwera..." pattern="(([0-9]{1}|[1-9]{1}[0-9]{1}|1[0-9]{2}|2[0-5]{2})\.){3}([0-9]{1}|[1-9]{1}[0-9]{1}|1[0-9]{2}|2[0-5]{2})" required>
+                                </div>
+                                <input type="hidden" name="ip" ng-value="ips">
+                            </div>
+                        </div>
+                        <div class="block-add-edit-poli">
+                            <div class="col-sm-12">
+                                <label class="take-max-width" for="user">Logowanie</label>
+                                <button class="btn btn-success" type="button" ng-click="addUserPasswordInput()"><span class="glyphicon glyphicon-plus"></span></button>
+                                <hr class="min-hr">
+                                <div ng-repeat="input_user in input_users track by $index" class="form-group input-group">
+                                    <button ng-if="input_users.length != 1" class="btn btn-danger input-group-button add-edit-delete-input-group-button" type="button" ng-click="deleteUserPassword($index)"><span class="glyphicon glyphicon-minus"></span></button>
+                                    <input class="form-control input-group-input add-edit-first-input-group-input" type="text" ng-value="input_users[$index]" ng-model="user" ng-change="addUser(user, $index)" placeholder="Podaj użytkownika..." required>
+                                    <input class="form-control input-group-input add-edit-delimiter-phone-input-group-button" type="text" value="-" readonly>
+                                    <input class="form-control input-group-input add-edit-second-input-group-input" type="text" ng-value="input_passwords[$index]" ng-model="password" ng-change="addPassword(password, $index)" placeholder="Podaj hasło..." required>
+                                </div>
+                                <input type="hidden" name="user" ng-value="users">
+                                <input type="hidden" name="password" ng-value="passwords">
+                            </div>
+                        </div>
+                        <div class="block-add-edit-mono">
+                            <label class="take-max-width" for="tag">Tagi</label>
+                            <button class="btn btn-success" type="button" ng-click="addInputTag()"><span class="glyphicon glyphicon-plus"></span></button>
+                            <hr class="min-hr">
+                            <div ng-repeat="input_tag in input_tags track by $index" class="form-group input-group">
+                                <button ng-if="input_tags.length != 1" class="btn btn-danger input-group-button add-edit-delete-input-group-button" type="button" ng-click="deleteTag($index)"><span class="glyphicon glyphicon-minus"></span></button>
+                                <input list="tag-list" class="form-control input-group-input add-edit-only-one-input-group-input" type="text" ng-value="input_tags[$index]" ng-model="tag" ng-change="addTag(tag, $index)"  placeholder="Podaj tag..." autocomplete="off" required>
+                                <datalist id="tag-list">
+                                    <option ng-repeat="tag in tags" value="{{tag.tag}}">
+                                </datalist>
+                            </div>
+                            <br>
+                            <input type="hidden" name="tag" ng-value="all_tags">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <?php include_once('templates/add_edit/angular_script_selector/add_edit_object_app.phtml');?>
+    </div>
+</div>
+<?php include_once('templates/elements/footer.phtml');?>

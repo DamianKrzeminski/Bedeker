@@ -1,0 +1,105 @@
+<?php
+include_once('templates/code_for_templates/redirect_if_not_login.php');
+include_once('templates/search/code_for_search_templates/search_model.php');
+include_once('templates/elements/headher.phtml');
+include_once('templates/elements/topnav.phtml');
+include_once('templates/elements/menu.phtml');
+?>
+<div class="bg-light">
+    <div class="container-fluid">
+        <div class="row content">   
+            <div class="col-sm-12">
+                <h1>
+                    <small>Wyszukiwanie Zaawansowane - <?php echo $search_model->getNamesToShow($this->getSearch_item());?></small>
+                    <hr>
+                </h1>
+                <?php if($this->getSearch_item() != 'routers'):?>
+                <div class="col-sm-2">
+                    <a href="?action=search&search_item=routers">
+                        <button class="btn btn-primary button-max-space" title="Wyszukaj Routery">Wyszukaj Routery</button>
+                    </a>
+                </div>
+                <?php endif;?>
+                <?php if($this->getSearch_item() != 'servers'):?>
+                <div class="col-sm-2">
+                    <a href="?action=serach&search_item=servers">
+                        <button class="btn btn-primary button-max-space" title="Wyszukaj Serwery">Wyszukaj Serwery</button>
+                    </a>
+                </div>
+                <?php endif;?>
+                <?php if($this->getSearch_item() != 'contact_details'):?>
+                <div class="col-sm-2">
+                    <a href="?action=search&search_item=contact_details">
+                        <button class="btn btn-primary button-max-space" title="Wyszukaj Dane Kontaktowe">Wyszukaj Dane Kontaktowe</button>
+                    </a>
+                </div>
+                <?php endif;?>
+                <?php if($this->getSearch_item() != 'clients'):?>
+                <div class="col-sm-2">
+                    <a href="?action=search&search_item=clients">
+                        <button class="btn btn-primary button-max-space" title="Wyszukaj Klientów">Wyszukaj Klientów</button>
+                    </a>
+                </div>
+                <?php endif;?>
+                <?php if($this->getSearch_item() != 'procedures'):?>
+                <div class="col-sm-2">
+                    <a href="?action=search&search_item=procedures">
+                        <button class="btn btn-primary button-max-space" title="Wyszukaj Procedury">Wyszukaj Procedury</button>
+                    </a>
+                </div>
+                <?php endif;?>
+                <?php if($this->getSearch_item() != 'tags'):?>
+                <div class="col-sm-2">
+                    <a href="?action=search&search_item=tags">
+                        <button class="btn btn-primary button-max-space" title="Wyszukaj Tagi">Wyszukaj Tagi</button>
+                    </a>
+                </div>
+                <?php endif;?>
+                <?php if($this->getSearch_item() != 'users'):?>
+                <div class="col-sm-2">
+                    <a href="?action=search&search_item=users">
+                        <button class="btn btn-primary button-max-space" title="Wyszukaj Użytkowników">Wyszukaj Użytkowników</button>
+                    </a>
+                </div>
+                <?php endif;?>
+            </div>
+            <div class="col-sm-12" ng-app="searchRouterApp" ng-controller="searchRouterController">
+            <hr>
+                <form action="?action=<?php echo $this->getSearch_item();?>" method="post">
+                    <div class="col-sm-6">
+                        <div ng-repeat="input in inputs | orderBy: 'choosen_column'">
+                            <div class="input-group take-max-width">
+                                <select class="form-control input-group-input" ng-model="choosen_column" ng-change="setChoosenColumn($index, choosen_column)">
+                                    <option ng-repeat="column in columns track by $index" ng-value="column" ng-bind="columns_to_show[column]"></option>
+                                </select>
+                                <select class="form-control input-group-input fit-select" ng-model="fit" ng-change="setFit($index, fit)">
+                                    <option value="Pasuje">Pasuje</option>
+                                    <option value="Zawiera">Zawiera</option>
+                                    <option value="Zaczyna się od">Zaczyna się od</option>
+                                    <option value="Kończy się na">Kończy się na</option>
+                                    <option value="Nie pasuje">Nie pasuje</option>
+                                    <option value="Nie zawiera">Nie zawiera</option>
+                                    <option value="Nie zaczyna się od">Nie zaczyna się od</option>
+                                    <option value="Nie kończy się na">Nie kończy się na</option>
+                                </select>
+                                <input type="text" class="form-control input-group-input" ng-model="value_for_column" ng-value="inputs[$index]['value_for_column']" ng-change="setValueForColumn($index, value_for_column)" placeholder="Podaj wartość...">
+                                <button ng-if="inputs.length != 1" class="btn btn-danger input-group-button delete-input-group-button-right" type="button" ng-click="deleteInput($index)"><span class="glyphicon glyphicon-minus"></span></button>
+                            </div>
+                            <select ng-if="!$last" class="form-control connector-select" ng-model="connector" ng-change="setConnector($index, connector)">
+                                <option value="OR">LUB</option>
+                                <option value="AND">ORAZ</option>
+                            </select>
+                        </div>
+                        
+                    </div>
+                    <input type="hidden" name="search" ng-value="toSend">
+                    <input type="hidden" name="table" value="router">
+                    <button class="btn btn-success" ng-click="addInput()" type="button"><span class="glyphicon glyphicon-plus"></span></button>
+                    <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-search"></span>  Szukaj</button>
+                </form>
+            </div>
+            <?php include_once('templates/search/angular_script_selector/search_app.phtml');?>
+        </div>
+    </div>
+</div>
+<?php include_once('templates/elements/footer.phtml');?>

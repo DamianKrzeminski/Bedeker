@@ -1,0 +1,65 @@
+<?php
+include_once('templates/code_for_templates/redirect_if_not_login.php');
+include_once('templates/add_edit/code_for_add_edit_templates/main_object_model.php');
+include_once('templates/elements/headher.phtml');
+include_once('templates/elements/topnav.phtml');
+include_once('templates/elements/menu.phtml');
+?>
+<div class="bg-light">
+    <div class="container-fluid">
+        <div ng-app="objectAddEditApp" ng-controller="objectAddEditController" class="row content">
+            <div class="col-sm-12 margin-top-add-edit">
+                <h1>
+                    <?php if($this->getElementId() !== null && !empty($this->getElementId())):?>
+                        <small>Edytuj Użytkownika - id: <?php echo $this->getElementId();?></small>   
+                    <?php else:?>
+                        <small>Dodaj Użytkownika</small>
+                    <?php endif;?>
+                    <hr>
+                </h1>
+                <form action="?action=<?php echo substr($this->getAction(), strpos($this->getAction(), '_') + 1, strlen($this->getAction()));?>" method="post">
+                    <input type="hidden" name="table" value="<?php echo substr($this->getAction(), strpos($this->getAction(), '_') + 1, strlen($this->getAction()));?>">
+                    <div class="col-sm-12">
+                        <?php if($this->getElementId() !== null && !empty($this->getElementId())):?>
+                            <input type="hidden" name="id" value=<?php echo $this->getElementId();?>>
+                        <?php endif;?>
+                        <div class="form-group">
+                            <label for="login">Login</label>
+                            <input class="form-control" type="text" name="login" ng-model="login" placeholder="Podaj Login..." autocomplete="off" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="firstname">Imię</label>
+                            <input class="form-control" type="text" name="firstname" ng-model="firstname" placeholder="Podaj Imię..." autocomplete="off" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastname">Nazwisko</label>
+                            <input class="form-control" type="text" name="lastname" ng-model="lastname" placeholder="Podaj Nazwisko..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="user_email">Email</label>
+                            <input class="form-control" type="email" name="email" ng-model="user_email" placeholder="Podaj email..." required> 
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Hasło</label>
+                            <input class="form-control" type="text" name="password" ng-model="password" placeholder="Podaj hasło..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="privilege">Uprawnienia</label>
+                            <select name="privilege" id="privilege" class="form-control" ng-model="privilege" required>
+                                <option value="Admin">Admin</option>
+                                <option value="Użytkownik">Użytkownik</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <button class="btn btn-success take-max-width" type="submit"><?php echo ($this->getElementId() !== null && !empty($this->getElementId())) ? "Edytuj Użytkownika" : "Dodaj Użytkownika";?></button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <?php include_once('templates/add_edit/angular_script_selector/add_edit_object_app.phtml');?>
+    </div>
+</div>
+<?php include_once('templates/elements/footer.phtml');?>

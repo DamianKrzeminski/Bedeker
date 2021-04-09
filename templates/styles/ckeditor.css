@@ -1,0 +1,30 @@
+.ck.ck-reset.ck-editor.ck-rounded-corners {
+    height: 100% !important;
+}
+
+.ck.ck-toolbar.ck-toolbar_grouping {
+    width: 100% !important;
+    border-radius: 4px !important;
+    border-bottom-left-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+    border: 2px solid #8f8f8f !important;
+    border-bottom: 0px !important;
+    background-color: #dddddd !important;
+    padding: 3px !important;
+}
+
+.ck.ck-editor__main {
+    height: 100% !important;
+}
+
+.ck.ck-editor__editable_inline {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 4px !important;
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+    border: 2px solid #8f8f8f !important;
+    background-color: #dddddd !important;
+    padding-left: 10px !important;
+}

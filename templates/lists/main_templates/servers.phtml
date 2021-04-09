@@ -1,0 +1,176 @@
+<?php
+include_once('templates/code_for_templates/redirect_if_not_login.php');
+include_once('templates/lists/code_for_lists_templates/main_object_model.php');
+include_once('templates/lists/code_for_lists_templates/comment_model.php');
+include_once('templates/code_for_templates/client_model.php');
+include_once('templates/elements/headher.phtml');
+include_once('templates/elements/topnav.phtml');
+include_once('templates/elements/menu.phtml');
+?>
+<div class="bg-light">
+    <div class="container-fluid">
+        <div ng-app="listObjectApp" ng-controller="listObjectControler" class="row content">  
+            <div class="col-sm-12">
+                <h1>
+                <small>Serwery - wszystkie (<text ng-bind="objects.length"></text>)</small>
+                    <hr>
+                </h1>
+                <?php include_once('templates/lists/elements/search_by_client.phtml');?>
+                <?php include_once('templates/lists/elements/advanced_search.phtml');?>
+                <?php if(isset($_GET['client']) && !empty($_GET['client'])):?>
+                <div class="col-sm-2">
+                    <a href="?action=routers&client=<?php echo $_GET['client'];?>">
+                        <button class="btn btn-primary button-max-space" title="Przejź do Routerów Klienta">Routery</button>
+                    </a>
+                </div>
+                <div class="col-sm-2">
+                    <a href="?action=contact_details&client=<?php echo $_GET['client'];?>">
+                        <button class="btn btn-primary button-max-space" title="Przejdź Danych Kontaktowych Klienta">Kontakty</button>
+                    </a>
+                </div>
+                <?php endif;?>
+            </div>
+            <div class="col-sm-12 margin-top">
+                <div class="col-sm-2">
+                    <a href="?action=add_servers">
+                        <button class="btn btn-success" title="Dodaj Serwer">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </button>
+                    </a>
+                </div>
+                <div class="col-sm-2"></div>
+                <div class="col-sm-2"></div>
+                <div class="col-sm-2"></div>
+                <div class="col-sm-2">
+                    <select class="form-control choose-table-content" ng-model="comment_table_content" ng-change="changeCommentTableContent(comment_table_content)">
+                        <option value="allComments">Wszystkie Komentarze</option>
+                        <option value="archComments">Archiwalne Komentarze</option>
+                        <option value="inUseComments">Używane Komentarze</option>
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control choose-table-content" ng-model="object_table_content" ng-change="changeObjectTableContent(object_table_content)">
+                        <option value="allObjects">Wszystkie Serwery</option>
+                        <option value="archObjects">Archiwalne Serwery</option>
+                        <option value="inUseObjects">Działające Serwery</option>
+                    </select>
+                </div>
+                <div class="search-padding">
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        <input ng-model="searchClient" class="form-control" type="text" placeholder="Szukaj Klienta..." title="Szukaj Klienta...">
+                    </div>
+                    <div class="col-sm-2">
+                        <input ng-model="searchLocation" class="form-control" type="text" placeholder="Szukaj Lokalizacji..." title="Szukaj Lokalizacji...">
+                    </div>
+                    <div class="col-sm-1">
+                        <input ng-model="searchType" class="form-control" type="text" placeholder="Szukaj Typu..." title="Szukaj Typu...">
+                    </div>
+                    <div class="col-sm-2">
+                        <input ng-model="searchOperationSystem" class="form-control" type="text" placeholder="Szukaj Systemu Operacyjnego..." title="Szukaj Systemu Operacyjnego...">
+                    </div>
+                    <div class="col-sm-2">
+                        <input ng-model="searchServerRole" class="form-control" type="text" placeholder="Szukaj Roli..." title="Szukaj Roli...">
+                    </div>
+                    <div class="col-sm-1">
+                        <input ng-model="searchIp" class="form-control" type="text" placeholder="Szukaj IP..." title="Szukaj IP...">
+                    </div>
+                    <div class="col-sm-2">
+                        <input ng-model="searchState" class="form-control" type="text" placeholder="Szukaj Stanu..." title="Szukaj Stanu...">
+                    </div>
+                </div>
+                <div class="search-padding">
+                </div>
+                <table class="table table-hover table-bordered table-cells text-center-and-middle">       
+                    <thead>    
+                    </thead>
+                    <tbody ng-repeat="object in objects | filter: {client: searchClient, location: searchLocation, server_type: searchType, operation_system: searchOperationSystem, server_role: searchServerRole, ip: searchIp, state: searchState} | orderBy: 'client' | orderBy: objectOrderBy">
+                        <tr class="th-main">
+                            <th class="take-content-size-of-cell">ID</th>
+                            <th ng-click="orderByMe('client')" title="Sortuj według klientów">Klient</th>
+                            <th ng-click="orderByMe('location')" title="Sortuj według lokalizacji">Lokalizacja</th>
+                            <th ng-click="orderByMe('type')" title="Sortuj według typu">Typ</th>
+                            <th ng-click="orderByMe('operation_system')" title="Sortuj według systemu operacyjnego">System operacyjny</th>
+                            <th>Rola</th>
+                            <th>IP</th>
+                            <th>Użytkownik</th>
+                            <th>Hasło</th>
+                            <th ng-click="orderByMe('state')" title="Sortuj według stanu">Stan</th>
+                            <th colspan="2" class=" take-content-size-of-cell">Akcje</th>
+                        </tr>
+                        <tr>
+                            <th scope="row" rowspan="4" ng-bind="$index+1"></th>
+                            <td ng-bind="object.client"></td>
+                            <td ng-bind="object.location"></td>
+                            <td ng-bind="object.server_type"></td>
+                            <td ng-bind="object.operation_system"></td>
+                            <td class="no-cell-hover no-padding">
+                                <table class="table table-hover no-margin-bottom table-bordered-in-table">
+                                    <tbody ng-repeat="server_role in object.server_role track by $index">
+                                        <tr>
+                                            <td ng-bind="server_role"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td class="no-cell-hover no-padding">
+                                <table class="table table-hover no-margin-bottom table-bordered-in-table">
+                                    <tbody ng-repeat="ip in object.ip track by $index">
+                                        <tr>
+                                            <td ng-bind="ip"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td class="no-cell-hover no-padding">
+                                <table class="table table-hover no-margin-bottom table-bordered-in-table">
+                                    <tbody ng-repeat="user in object.user track by $index">
+                                        <tr>
+                                            <td ng-bind="user"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td class="no-cell-hover no-padding">
+                                <table class="table table-hover no-margin-bottom table-bordered-in-table">
+                                    <tbody ng-repeat="password in object.password track by $index">
+                                        <tr>
+                                            <td ng-bind="password"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td ng-bind="object.state"></td>
+                            <td rowspan="4" class="take-content-size-of-cell ">
+                                <a ng-if="object.arch == 1" href="?action=restore_servers&id={{object.id}}">
+                                    <button ng-if="object.arch == 1" type="button" class="btn btn-info" title="Przywróć">
+                                        <span ng-if="object.arch == 1" class="glyphicon glyphicon-share-alt"></span>
+                                    </button>
+                                </a>
+                                <a ng-if="object.arch == 0" href="?action=edit_servers&id={{object.id}}">
+                                    <button ng-if="object.arch == 0" type="button" class="btn btn-info" title="Edytuj">
+                                        <span ng-if="object.arch == 0" class="glyphicon glyphicon-pencil"></span>
+                                    </button>
+                                </a>
+                            </td>
+                            <td rowspan="4" class="take-content-size-of-cell ">
+                                <button ng-if="object.arch == 0" ng-click="archObjectAlert(object.id)" type="button" class="btn btn-danger" title="Archiwizuj">
+                                    <span ng-if="object.arch == 0" class="glyphicon glyphicon-share-alt"></span>
+                                </button>
+                                <button ng-if="object.arch == 1" ng-click="deleteObjectAlert(object.id)" type="button" class="btn btn-danger" title="Usuń">
+                                    <span ng-if="object.arch == 1" class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </td>
+                        </tr>
+                        <?php include_once('templates/lists/elements/comments.phtml');?>
+                    </tbody>
+                </table>
+            </div>
+            <?php include_once('templates/lists/angular_script_selector/list_object_app.phtml');?>
+        </div>
+    </div>
+</div>
+<?php include_once('templates/elements/footer.phtml');?>

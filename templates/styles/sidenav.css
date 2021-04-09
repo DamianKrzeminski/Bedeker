@@ -1,0 +1,20 @@
+.sidenav {
+    position: absolute;
+    width: 250px !important;
+    background-color: #212121 !important;
+    border-top: 1px solid #000000 !important;
+}
+
+.sidenav>ul>li>a {
+    width: 250px !important;
+    padding-left: 20px !important;
+    font-weight: bold !important;
+    font-size: medium !important;
+    color: rgb(110, 110, 110) !important;
+}
+
+.sidenav>ul>li>a:hover,
+.sidenav>ul>li.active>a {
+    background-color: #000000 !important;
+    color: #eeeeee !important;
+}

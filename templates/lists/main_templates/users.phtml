@@ -1,0 +1,87 @@
+<?php
+include_once('templates/code_for_templates/redirect_if_not_login.php');
+include_once('templates/lists/code_for_lists_templates/main_object_model.php');
+include_once('templates/elements/headher.phtml');
+include_once('templates/elements/topnav.phtml');
+include_once('templates/elements/menu.phtml');
+?>
+<div class="bg-light">
+    <div class="container-fluid">
+        <div ng-app="listObjectApp" ng-controller="listObjectControler" class="row content"> 
+            <div class="col-sm-12">
+                <h1>
+                    <small>Użytkownicy - wszyscy (<text ng-bind="objects.length"></text>)</small>
+                    <hr>
+                </h1>
+                <?php include_once('templates/lists/elements/advanced_search.phtml');?>
+                <div class="col-sm-2">
+                    <a href="?action=add_users">
+                        <button class="btn btn-success" title="Dodaj Użytkownika">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </button>
+                    </a>
+                </div>
+                <div class="search-padding">
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <div class="col-sm-2">
+                        <input ng-model="searchLogin" class="form-control" type="text" placeholder="Szukaj Login..." title="Szukaj Login...">
+                    </div>
+                    <div class="col-sm-2">
+                        <input ng-model="searchFirstname" class="form-control" type="text" placeholder="Szukaj Imienia..." title="Szukaj Imienia...">
+                    </div>
+                    <div class="col-sm-2">
+                        <input ng-model="searchLastname" class="form-control" type="text" placeholder="Szukaj Nazwiska..." title="Szukaj Nazwiska...">
+                    </div>
+                    <div class="col-sm-2">
+                        <input ng-model="searchEmail" class="form-control" type="text" placeholder="Szukaj Emailu..." title="Szukaj Emailu...">
+                    </div>
+                    <div class="col-sm-2">
+                        <input ng-model="searchPrivilege" class="form-control" type="text" placeholder="Szukaj Uprawnień..." title="Szukaj Uprawnień...">
+                    </div>
+                </div>
+                <div class="search-padding">
+                </div>
+                <table class="table table-hover table-bordered table-cells text-center-and-middle">       
+                    <thead>
+                        <tr class="th-main">
+                            <th class="take-content-size-of-cell">ID</th>
+                            <th ng-click="orderByMe('login')" title="Sortuj według imion">Login</th>
+                            <th ng-click="orderByMe('firstname')" title="Sortuj według imion">Imię</th>
+                            <th ng-click="orderByMe('lastname')" title="Sortuj według nazwisk">Nazwisko</th>
+                            <th ng-click="orderByMe('email')" title="Sortuj według emailów">Email</th>
+                            <th ng-click="orderByMe('privilege')" title="Sortuj według uprawnień">Uprawnienia</th>
+                            <th colspan="2" class=" take-content-size-of-cell">Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody ng-repeat="object in objects | filter: {login: searchLogin, firstname: searchFirstname, lastname: searchLastname, email: searchEmail, privilege: searchPrivilege} | orderBy: 'email' | orderBy: objectOrderBy">
+                        <tr>
+                            <th scope="row" ng-bind="$index+1"></th>
+                            <td ng-bind="object.login"></td>
+                            <td ng-bind="object.firstname"></td>
+                            <td ng-bind="object.lastname"></td>
+                            <td ng-bind="object.email"></td>
+                            <td ng-bind="object.privilege"></td>
+                            <td class="take-content-size-of-cell ">
+                                <a href="?action=edit_users&id={{object.id}}">
+                                    <button type="button" class="btn btn-info" title="Edytuj">
+                                        <span class="glyphicon glyphicon-pencil"></span>
+                                    </button>
+                                </a>
+                            </td>
+                            <td class="take-content-size-of-cell ">
+                                <button ng-click="deleteObjectAlert(object.id)" type="button" class="btn btn-danger" title="Usuń">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <?php include_once('templates/lists/angular_script_selector/list_object_app.phtml');?>
+        </div>
+    </div>
+</div>
+<?php include_once('templates/elements/footer.phtml');?>

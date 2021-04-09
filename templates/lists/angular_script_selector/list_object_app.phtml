@@ -1,0 +1,83 @@
+<script>
+list_object_app = angular.module("listObjectApp", []);
+list_object_app.controller("listObjectControler", function($scope){
+    object = <?php echo json_encode($this->getAction());?>;
+    all_objects = <?php echo json_encode($all_objects);?>;
+    arch_objects = <?php echo json_encode($arch_objects);?>;
+    in_use_objects = <?php echo json_encode($in_use_objects);?>;
+    all_comments = <?php echo (isset($all_comments) && !empty($all_comments)) ? json_encode($all_comments) : json_encode('');?>;
+    arch_comments = <?php echo (isset($arch_comments) && !empty($arch_comments)) ? json_encode($arch_comments) : json_encode('');?>;
+    in_use_comments = <?php echo (isset($in_use_comments) && !empty($in_use_comments)) ? json_encode($in_use_comments) : json_encode('');?>;
+    $scope.clients= <?php echo (isset($clients) && !empty($clients)) ? json_encode($clients) : json_encode('');?>;
+    $scope.search = <?php echo json_encode($search);?>;
+    $scope.action_name_to_display = <?php echo json_encode($action_name_to_display);?>;
+    $scope.comments = in_use_comments;
+    $scope.showComment = false;
+    $scope.showAddComment = false;
+    $scope.comment_table_content = "inUseComments";
+    $scope.show_edit_comment = -1;
+    number = 1;
+    if($scope.search){
+        $scope.object_table_content = "allObjects";
+        $scope.objects = all_objects;
+    }else{
+        $scope.object_table_content = "inUseObjects";
+        $scope.objects = in_use_objects;
+    }
+    $scope.changeObjectTableContent = function(object_table_content){
+        $scope.object_table_content = object_table_content;
+        if(object_table_content == "inUseObjects"){
+            $scope.objects = in_use_objects;
+        }else if(object_table_content == "archObjects"){
+            $scope.objects = arch_objects;
+        }else if(object_table_content == "allObjects"){
+            $scope.objects = all_objects;
+        }
+    }
+    $scope.changeCommentTableContent = function(comment_table_content){
+        $scope.comment_table_content = comment_table_content;
+        if(comment_table_content == "inUseComments"){
+            $scope.comments = in_use_comments;
+        }else if(comment_table_content == "archComments"){
+            $scope.comments = arch_comments;
+        }else if(comment_table_content == "allComments"){
+            $scope.comments = all_comments;
+        }
+    }
+    $scope.showEditComment = function(comment_id){
+        $scope.show_edit_comment = comment_id;
+    }
+    $scope.hideEditComment = function(){
+        $scope.show_edit_comment = -1;
+    }
+    $scope.icrease = function(){
+        return number++;
+    }
+    $scope.reset = function(){
+        return number = 1;
+    }
+    $scope.orderByMe = function(x){
+        $scope.routerOrderBy = x;
+    }
+    $scope.deleteObjectCommentAlert = function(id){
+        if(window.confirm("Usunąć ten Komentarz?")){
+            window.location = "?action=delete_" + object + "_comment&id=" + id;
+        }
+    }
+    $scope.archObjectCommentAlert = function(id){
+        if(window.confirm("Archiwizować ten Komentarz?")){
+            window.location = "?action=arch_" + object + "_comment&id=" + id;
+        }
+    }
+    $scope.deleteObjectAlert = function(id){
+        if(window.confirm("Usunąć " + $scope.action_name_to_display + "?")){
+            window.location = "?action=delete_" + object + "&id=" + id;
+        }
+    }
+    $scope.archObjectAlert = function(id){
+        if(window.confirm("Archiwizować " + $scope.action_name_to_display + "?")){
+            window.location = "?action=arch_" + object + "&id=" + id;
+        }
+    }
+});
+</script>

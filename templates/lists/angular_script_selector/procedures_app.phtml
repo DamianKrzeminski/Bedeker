@@ -1,0 +1,145 @@
+<script>
+var procedure_app = angular.module("procedureApp", ['ngSanitize'])
+procedure_app.controller("procedureControler", function($scope, $http){
+    all_procedures = <?php echo json_encode($all_objects);?>;
+    arch_procedures = <?php echo json_encode($arch_objects);?>;
+    in_use_procedures = <?php echo json_encode($in_use_objects);?>;
+    $scope.procedures = in_use_procedures;
+    $scope.tags = <?php echo json_encode($tags);?>;
+    $scope.procedure_table_content = "inUseProcedures";
+    $scope.procedure_content = null;
+    $scope.add_edit_procedure = false;
+    $scope.show_procedure = false;
+    $scope.path = '';
+    $scope.subject = '';
+    $scope.id = null;
+    $scope.input_tags = [''];
+    $scope.new_tags = [];
+    $scope.orderByMe = function(x){
+        $scope.procedureOrderBy = x;
+    }
+    $scope.changeProcedureTableContent = function(procedure_table_content){
+        $scope.procedure_table_content = procedure_table_content;
+        if(procedure_table_content == "inUseProcedures"){
+            $scope.procedures = in_use_procedures;
+        }else if(procedure_table_content == "archProcedures"){
+            $scope.procedures = arch_procedures;
+        }else if(procedure_table_content == "allProcedures"){
+            $scope.procedures = all_procedures;
+        }
+    }
+    $scope.editProcedure = function(path, subject, id, tag){
+        $scope.add_edit_procedure = true;
+        $scope.show_procedure = false;
+        $scope.path = path;
+        $scope.subject = subject;
+        $scope.id = id;
+        $scope.input_tags = tag;
+        prepareTag();
+        $http.get(path).then(function(response){
+            $scope.procedure_content = response.data;
+        });
+        
+    }
+    $scope.addProcedure = function(){
+        $scope.add_edit_procedure = true;
+        $scope.show_procedure = false;
+        $scope.procedure_content = '';
+        $scope.path = '';
+        $scope.subject = '';
+        $scope.input_tags = [''];
+        $scope.id = null;
+    }
+    $scope.cancelEditProcedure = function(){
+        $scope.add_edit_procedure = false;
+    }
+    $scope.cancelShowProcedure = function(){
+        $scope.show_procedure = false;
+    }
+    $scope.showProcedure = function(path, subject){
+        $scope.show_procedure = true;
+        $scope.add_edit_procedure = false;
+        $scope.path = path;
+        $scope.subject = subject;
+        $http.get(path).then(function(response){
+            $scope.procedure_content = response.data;
+        });
+    }
+    $scope.deleteProcedureAlert = function(id, subject){
+        if(window.confirm("Usunąć tą Procedure?")){
+            window.location = "?action=delete_procedures&id=" + id + "&subject=" + subject;
+        }
+    }
+    $scope.archProcedureAlert = function(id){
+        if(window.confirm("Archiwizować tą Procedure?")){
+            window.location = "?action=arch_procedures&id=" + id;
+        }
+    }
+    $scope.addInputTag = function(){
+        $scope.input_tags.push('');
+    }
+
+    $scope.addTag = function(tag, index){
+        deleteNewTag($scope.input_tags[index]);
+        $scope.input_tags[index] = tag;
+        prepareTag();
+        checkItIsNewTag(tag, index);
+    }
+
+    deleteNewTag = function(tag){
+        position = $scope.new_tags.indexOf(tag)
+        if(position != -1){
+            $scope.new_tags.splice(position, 1);
+            prepareNewTags();
+        }
+    }
+
+    prepareTag = function(){
+        $scope.all_tags = $scope.input_tags.join(";");
+        $scope.all_tags = ";"+$scope.all_tags+";";
+    }
+
+    checkItIsNewTag = function(tag, index){
+        if($scope.tags.indexOf(tag) == -1 && $scope.new_tags.indexOf(tag) == -1){
+            $scope.new_tags.push(tag);
+            prepareNewTags();
+        }
+    }
+
+    prepareNewTags = function(){
+        $scope.all_new_tags = $scope.new_tags.join(";");
+        $scope.all_new_tags = ";"+$scope.all_new_tags+";";
+    }
+
+    $scope.deleteTag = function(index){
+        deleteNewTag($scope.input_tags[index]);
+        $scope.input_tags.splice(index, 1);
+        prepareTag();
+    }
+})
+procedure_app.directive("ckeditor", function() {
+    return {
+        require: '?ngModel',
+        restrict: 'A',
+        link: function (scope, element, attr, ngModel) {
+        if (!ngModel) return;
+            ClassicEditor
+            .create(element[0])
+            .then(editor => {
+                editor.model.document.on('change:data', () => {
+                    ngModel.$setViewValue(editor.getData());
+                    if (editor.getData() !== ngModel.$modelValue) {
+                        scope.$apply();
+                    }
+                });
+                ngModel.$render = () => {
+                    editor.setData(ngModel.$modelValue);
+                };
+                scope.$on('$destroy', () => {
+                    editor.destroy();
+                });
+            });
+        }
+    };
+});
+</script>

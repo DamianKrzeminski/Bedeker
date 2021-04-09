@@ -1,0 +1,29 @@
+.dropdown-toogle {
+    background-color: #222 !important;
+    color: rgb(110, 110, 110) !important;
+    font-weight: bold !important;
+    height: 50px !important;
+    text-align: justify !important;
+    padding-top: 15px !important;
+    padding-bottom: 15px !important;
+    margin-right: 15px !important;
+}
+
+.dropdown-toogle:hover,
+.dropdown-toogle:focus {
+    background-color: #000000 !important;
+    color: #eeeeee !important;
+}
+
+.dropdown-menu {
+    background-color: #e0e0e0 !important;
+    border: 1px solid #8f8f8f !important;
+}
+
+.dropdown-menu>li>a:hover {
+    background-color: lightsteelblue !important;
+}
+
+.divider {
+    background-color: #8f8f8f !important;
+}

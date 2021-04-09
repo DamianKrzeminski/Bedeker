@@ -1,0 +1,163 @@
+<?php
+include_once('templates/code_for_templates/redirect_if_not_login.php');
+include_once('templates/add_edit/code_for_add_edit_templates/main_object_model.php');
+include_once('templates/code_for_templates/client_model.php');
+include_once('templates/code_for_templates/tag_model.php');
+include_once('templates/elements/headher.phtml');
+include_once('templates/elements/topnav.phtml');
+include_once('templates/elements/menu.phtml');
+?>
+<div class="bg-light">
+    <div class="container-fluid">
+        <div ng-app="objectAddEditApp" ng-controller="objectAddEditController" class="row content">
+            <div class="col-sm-12">
+                <h1>
+                    <?php if($this->getElementId() !== null && !empty($this->getElementId())):?>
+                        <small>Edytuj Router - id: <?php echo $this->getElementId();?></small>   
+                    <?php else:?>
+                        <small>Dodaj Router</small>
+                    <?php endif;?>
+                    <hr>
+                </h1>
+                <form action="?action=<?php echo substr($this->getAction(), strpos($this->getAction(), '_') + 1, strlen($this->getAction()));?>" method="post">
+                    <input type="hidden" name="table" value="<?php echo substr($this->getAction(), strpos($this->getAction(), '_') + 1, strlen($this->getAction()));?>">
+                    <input type="hidden" name="arch" value="0">
+                    <div class="col-sm-7">
+                        <div class="form-group">
+                            <?php if($this->getElementId() !== null && !empty($this->getElementId())):?>
+                            <input type="hidden" name="id" value=<?php echo $this->getElementId();?>>
+                            <?php endif;?>
+                            <label for="client">Klient</label>
+                            <input list="client-list" class="form-control" type="text" name="client" ng-model="client" ng-change="checkIfItIsNewClient()" placeholder="Podaj klienta..." autocomplete="off" required>
+                            <datalist id="client-list">
+                                <option ng-repeat="client in clients" value="{{client.client}}">
+                            </datalist>
+                        </div>
+                        <div class="form-group">
+                            <label for="location">Lokalizacja</label>
+                            <input class="form-control" type="text" name="location" ng-model="location" placeholder="Podaj lokalizację..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="model">Model routera</label>
+                            <input class="form-control" type="text" name="model" ng-model="model" placeholder="Podaj model routera..." required> 
+                        </div>
+                        <div class="form-group">
+                            <label for="snmp_password">Hasło SNMP</label>
+                            <input class="form-control" type="text" name="snmp_password" ng-model="snmp_password" placeholder="Podaj hasło SNMP...">
+                        </div>
+                        <div class="block-add-edit-poli">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="role">Rola routera</label>
+                                    <select name="role" id="role" class="form-control" ng-model="role">
+                                        <option value="Oddział">Oddział</option>
+                                        <option value="Centrala">Centrala</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="state">Status monitoringu</label>
+                                    <select name="state" id="state" class="form-control" ng-model="state">
+                                        <option value="Monitorowany">Monitorowany</option>
+                                        <option value="Niemonitorowany">Niemonitorowany</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="block-add-edit-poli">
+                            <div class="col-sm-12">
+                            <label class="take-max-width" for="ip">Łącza</label>
+                            <button class="btn btn-success" type="button" ng-click="addIpOperatorDownUpTypeInput()"><span class="glyphicon glyphicon-plus"></span></button>
+                            <hr class="min-hr">
+                                <div ng-repeat="input_ip in input_ips track by $index" class="form-group input-group">
+                                    <button ng-if="input_ips.length != 1" class="btn btn-danger input-group-button add-edit-delete-input-group-button" type="button" ng-click="deleteIpOperatorDownUpType($index)"><span class="glyphicon glyphicon-minus"></span></button>
+                                    <input class="form-control input-group-input add-edit-first-input-group-input" type="text" ng-value="input_ips[$index]" ng-model="ip" ng-change="addIp(ip, $index)" ng-model-options="{allowInvalid: true }" placeholder="Podaj IP routera..." pattern="(([0-9]{1}|[1-9]{1}[0-9]{1}|1[0-9]{2}|2[0-5]{2})\.){3}([0-9]{1}|[1-9]{1}[0-9]{1}|1[0-9]{2}|2[0-5]{2})" required>
+                                    <input class="form-control input-group-input add-edit-delimiter-input-group-button" type="text" readonly>
+                                    <input class="form-control input-group-input add-edit-first-input-group-input" type="text" ng-value="input_operators[$index]" ng-model="operator" ng-change="addOperator(operator, $index)" placeholder="Podaj operatora..." required>
+                                    <input class="form-control input-group-input add-edit-delimiter-input-group-button" type="text" readonly>
+                                    <input class="form-control input-group-input add-edit-down-input-group-input" type="text" ng-value="input_downs[$index]" ng-model="down" ng-change="addDown(down, $index)" ng-model-options="{allowInvalid: true }" placeholder="Down" pattern="[0-9]*">
+                                    <input class="form-control input-group-input add-edit-delimiter-mbps-input-group-button" type="text" value="Mbps/" readonly>
+                                    <input class="form-control input-group-input add-edit-up-input-group-input" type="text" ng-value="input_ups[$index]" ng-model="up" ng-change="addUp(up, $index)" ng-model-options="{allowInvalid: true }" placeholder="UP" pattern="[0-9]*">
+                                    <input class="form-control input-group-input add-edit-delimiter-mbps-input-group-button" type="text" value="Mbps" readonly>
+                                    <input class="form-control input-group-input add-edit-second-input-group-input" type="text" ng-value="input_types[$index]" ng-model="type" ng-change="addType(type, $index)" placeholder="Podaj type...">
+                                </div>
+                                <input type="hidden" name="ip" ng-value="ips">
+                                <input type="hidden" name="operator" ng-value="operators">
+                                <input type="hidden" name="down" ng-value="downs">
+                                <input type="hidden" name="up" ng-value="ups">
+                                <input type="hidden" name="type" ng-value="types">
+                            </div>
+                        </div>
+                        <div class="block-add-edit-poli">
+                            <div class="col-sm-12">
+                                <label class="take-max-width" for="user">Logowanie</label>
+                                <button class="btn btn-success" type="button" ng-click="addUserPasswordInput()"><span class="glyphicon glyphicon-plus"></span></button>
+                                <hr class="min-hr">
+                                <div ng-repeat="input_user in input_users track by $index" class="form-group input-group">
+                                    <button ng-if="input_users.length != 1" class="btn btn-danger input-group-button add-edit-delete-input-group-button" type="button" ng-click="deleteUserPassword($index)"><span class="glyphicon glyphicon-minus"></span></button>
+                                    <input class="form-control input-group-input add-edit-first-input-group-input" type="text" ng-value="input_users[$index]" ng-model="user" ng-change="addUser(user, $index)" placeholder="Podaj użytkownika..." required>
+                                    <input class="form-control input-group-input add-edit-delimiter-phone-input-group-button" type="text" value="-" readonly>
+                                    <input class="form-control input-group-input add-edit-second-input-group-input" type="text" ng-value="input_passwords[$index]" ng-model="password" ng-change="addPassword(password, $index)" placeholder="Podaj hasło..." required>
+                                </div>
+                                <input type="hidden" name="user" ng-value="users">
+                                <input type="hidden" name="password" ng-value="passwords">
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <button class="btn btn-success take-max-width" type="submit"><?php echo ($this->getElementId() !== null && !empty($this->getElementId())) ? "Edytuj Router" : "Dodaj Router";?></button>
+                                    <input type="hidden" name="new_client" ng-value="new_client">
+                                    <input type="hidden" name="new_tags" ng-value="all_new_tags">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-5">
+                        <div class="block-add-edit-mono">
+                            <label class="take-max-width" for="local_contact">Kontakty lokalne</label>
+                            <button class="btn btn-success" type="button" ng-click="addLocalContact()"><span class="glyphicon glyphicon-plus"></span></button>
+                            <hr class="min-hr">
+                            <div ng-repeat="input_local_contact in input_local_contacts track by $index" class="form-group input-group">  
+                                <button ng-if="input_local_contacts.length != 1" class="btn btn-danger input-group-button add-edit-delete-input-group-button" type="button" ng-click="deleteLocalContact($index)"><span class="glyphicon glyphicon-minus"></span></button>
+                                <input class="form-control input-group-input add-edit-first-input-group-input" type="text" ng-value="input_local_phones[$index]" ng-model="local_phone" ng-change="addLocalPhone(local_phone, $index)" ng-model-options="{allowInvalid: true }" placeholder="Podaj numer telefonu..." required pattern="[0-9]{9}">
+                                <input class="form-control input-group-input add-edit-delimiter-phone-input-group-button" type="text" value="-" readonly>
+                                <input class="form-control input-group-input add-edit-second-input-group-input" type="text" ng-value="input_local_names[$index]" ng-model="local_name" ng-change="addLocalName(local_name, $index)" placeholder="Podaj właściciela numeru..." required>
+                            </div>
+                            <input type="hidden" name="local_contact" ng-value="localContacts">
+                        </div>
+                        <div class="block-add-edit-mono">
+                            <label class="take-max-width" for="operator_contact">Kontakty do operatorów</label>
+                            <button class="btn btn-success " type="button" ng-click="addOperatorContact()"><span class="glyphicon glyphicon-plus"></span></button>
+                            <hr class="min-hr">
+                            <div ng-repeat="input_operator_phone in input_operator_phones track by $index" class="form-group input-group">
+                                <button ng-if="input_operator_phones.length != 1" class="btn btn-danger input-group-button add-edit-delete-input-group-button" type="button" ng-click="deleteOperatorContact($index)"><span class="glyphicon glyphicon-minus"></span></button>
+                                <input class="form-control input-group-input add-edit-first-input-group-input" type="text" ng-value="input_operator_phones[$index]" ng-model="operator_phone" ng-change="addOperatorPhone(operator_phone, $index)" ng-model-options="{allowInvalid: true }" placeholder="Podaj numer telefonu..." required pattern="[0-9]{9}">
+                                <input class="form-control input-group-input add-edit-delimiter-phone-input-group-button" type="text" value="-" readonly>
+                                <input class="form-control input-group-input add-edit-second-input-group-input" type="text" ng-value="input_operator_names[$index]" ng-model="operator_name" ng-change="addOperatorName(operator_name, $index)" placeholder="Podaj właściciela numeru..." required>
+                            </div>
+                            <input type="hidden" name="operator_contact" ng-value="operatorContacts">
+                        </div>
+                        <div class="block-add-edit-mono">
+                            <label class="take-max-width" for="tag">Tagi</label>
+                            <button class="btn btn-success" type="button" ng-click="addInputTag()"><span class="glyphicon glyphicon-plus"></span></button>
+                            <hr class="min-hr">
+                            <div ng-repeat="input_tag in input_tags track by $index" class="form-group input-group">
+                                <button ng-if="input_tags.length != 1" class="btn btn-danger input-group-button add-edit-delete-input-group-button" type="button" ng-click="deleteTag($index)"><span class="glyphicon glyphicon-minus"></span></button>
+                                <input list="tag-list" class="form-control input-group-input add-edit-only-one-input-group-input" type="text" ng-value="input_tags[$index]" ng-model="tag" ng-change="addTag(tag, $index)"  placeholder="Podaj tag..." autocomplete="off" required>
+                                <datalist id="tag-list">
+                                    <option ng-repeat="tag in tags" value="{{tag.tag}}">
+                                </datalist>
+                            </div>
+                            <br>
+                            <input type="hidden" name="tag" ng-value="all_tags">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <?php include_once('templates/add_edit/angular_script_selector/add_edit_object_app.phtml');?>
+    </div>
+</div>
+<?php include_once('templates/elements/footer.phtml');?>

@@ -1,0 +1,84 @@
+<tr>
+    <td colspan="<?php echo ($this->getAction() != 'routers') ? count($object)-3 : count($object)-5;?>" class="td-comment-buttons">
+        <button ng-show="!showComment" ng-click="showComment=!showComment; hideEditComment()" type="button" class="btn btn-primary btn-font-properties">Pokaż komentarze   <span ng-show="!showComment" class="glyphicon glyphicon-chevron-down"></span></button>
+        <button ng-show="showComment" ng-click="showComment=!showComment; hideEditComment()" type="button" class="btn btn-primary btn-font-properties">Ukryj komentarze   <span ng-show="showComment" class="glyphicon glyphicon-chevron-up"></span></button>
+        <button ng-show="!showAddComment" ng-click="showAddComment=!showAddComment" class="btn btn-success btn-font-properties" type="button" title="Dodaj Komentarz">Dodaj Komentarz</button>
+        <button ng-show="showAddComment" ng-click="showAddComment=!showAddComment" class="btn btn-info btn-font-properties" type="button" title="Anuluj Dodawanie Komentarza">Anuluj Dodawanie Komentarza</button>
+    </td>
+</tr>
+<tr ng-show="showAddComment">
+    <td class="no-cell-hover" colspan="<?php echo ($this->getAction() != 'routers') ? count($object)-3 : count($object)-5;?>">
+        <form action="?action=<?php echo $this->getAction();?>" method="post" class="no-margin-bottom">
+            <input type="hidden" name="table" value="<?php echo $this->getAction();?>_comment">
+            <input type="hidden" name="arch" value="0">
+            <input type="hidden" name="<?php echo $this->getAction();?>_id" value="{{object.id}}">
+            <input type="hidden" name="author" value="<?php echo $this->getLogin();?>">
+            <input type="hidden" name="date" value="<?php echo date("Y-m-d H:i:s");?>">
+            <div class="form-group input-group take-max-width no-margin-bottom">
+                <textarea ng-model="textarea_content" class="form-control" type="text" name="content" placeholder="Wpisz komentarz"></textarea>
+                <button class="btn btn-success input-group-textarea" type="submit"><span class="glyphicon glyphicon-plus"></span></button>
+            </div>     
+        </form>
+    </td>
+</tr>
+<tr ng-show="showComment">
+    <td colspan="<?php echo ($this->getAction() != 'routers') ? count($object)-3 : count($object)-5;?>" class="no-cell-hover no-padding">
+        <table class="table table-hover table-bordered-comment no-margin-bottom text-center-and-middle">
+            <thead>
+                <tr class="th-comment">
+                    <th>ID</th>
+                    <th>Autor</th>
+                    <th>Data</th>
+                    <th colspan="2">Akcje</th>
+                </tr>  
+            </thead>
+            <tbody ng-init="id=reset()" ng-repeat="comment in comments | orderBy : '<?php echo $this->getAction();?>_id'">
+                <tr>
+                    <th ng-if="comment.<?php echo $this->getAction();?>_id == object.id" ng-init="id=icrease()" scope="row" rowspan="2" class="id-comment take-content-size-of-cell " ng-bind="id"></th>
+                    <td ng-if="comment.<?php echo $this->getAction();?>_id == object.id" ng-bind="comment.author"></td>
+                    <td ng-if="comment.<?php echo $this->getAction();?>_id == object.id" ng-bind="comment.date"></td>
+                    <td ng-if="comment.<?php echo $this->getAction();?>_id == object.id" rowspan="2" class="comment-actions take-content-size-of-cell ">
+                        <button ng-if="show_edit_comment!=comment.id && comment.arch == 0" ng-click="showEditComment(comment.id)" type="button" class="btn btn-info" title="Edytuj">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </button>
+                        <a ng-if="comment.arch == 1" href="?action=restore_<?php echo $this->getAction();?>_comment&id={{comment.id}}">
+                            <button ng-if="show_edit_comment!=comment.id && comment.arch == 1" type="button" class="btn btn-info" title="Przywróć">
+                                <span class="glyphicon glyphicon-share-alt"></span>
+                            </button>
+                        </a>
+                        <button ng-if="show_edit_comment == comment.id" ng-click="hideEditComment()" ng-click="showEditComment(comment.id)" type="button" class="btn btn-info" title="Anuluj">
+                            <span class="glyphicon glyphicon-minus"></span>
+                        </button>
+                    </td>
+                    <td ng-if="comment.<?php echo $this->getAction();?>_id == object.id" rowspan="2" class="comment-actions take-content-size-of-cell ">
+                        <button ng-if="comment.arch == 0" ng-click="archObjectCommentAlert(comment.id)" type="button" class="btn btn-danger" title="Archiwizuj">
+                            <span ng-if="comment.arch == 0" class="glyphicon glyphicon-share-alt"></span>
+                        </button>
+                        <button ng-if="comment.arch == 1" ng-click="deleteObjectCommentAlert(comment.id)" type="button" class="btn btn-danger" title="Usuń">
+                            <span ng-if="comment.arch == 1" class="glyphicon glyphicon-trash"></span>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td ng-if="comment.<?php echo $this->getAction();?>_id == object.id" colspan="2" class="comment-content" ng-bind="comment.content"></td>
+                 </tr>
+                <tr ng-if="show_edit_comment==comment.id">
+                    <td colspan="<?php echo ($this->getAction() != 'routers') ? count($object)-3 : count($object)-5;?>">
+                        <form action="?action=<?php echo $this->getAction();?>" method="post" class="no-margin-bottom">
+                            <input type="hidden" name="table" value="<?php echo $this->getAction();?>_comment">
+                            <input type="hidden" name="arch" value="0">
+                            <input type="hidden" name="id" value="{{comment.id}}">
+                            <input type="hidden" name="<?php echo $this->getAction();?>_id" value="{{object.id}}">
+                            <input type="hidden" name="author" value=<?php echo $this->getLogin();?>>
+                            <input type="hidden" name="date" value=<?php echo date("Y-m-d H:i:s");?>>
+                            <div class="form-group input-group take-max-width no-margin-bottom">
+                                <textarea class="form-control" type="text" name="content" placeholder="Wpisz komentarz" ng-bind="comment.content" required></textarea>
+                                <button class="btn btn-success input-group-textarea" type="submit"><span class="glyphicon glyphicon-pencil"></span></button>
+                            </div>     
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </td>
+</tr>

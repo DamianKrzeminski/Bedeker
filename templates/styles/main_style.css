@@ -1,0 +1,181 @@
+@import "tables.css";
+@import "input_groups.css";
+@import "buttons.css";
+@import "sidenav.css";
+@import "navbar.css";
+@import "dropdown.css";
+@import "ckeditor.css";
+@import "login.css";
+
+/* PAGE DEFAULT BACKGOUND */
+
+.bg-dark {
+    background-color: #212121 !important;
+    width: fit-content !important;
+    min-width: 100% !important;
+}
+
+.bg-light {
+    background-color: #181818!important;
+    margin-left: 250px !important;
+    margin-top: 50px !important;
+}
+
+
+/* SMALL HEADING */
+
+h1 {
+    color: #8f8f8f !important;
+}
+
+small {
+    color: #8f8f8f !important;
+}
+
+
+/* HR SPACE LINE */
+
+hr {
+    border-top: 2px solid #8f8f8f !important;
+}
+
+.min-hr {
+    margin-bottom: 15px !important;
+    margin-top: 15px !important;
+}
+
+
+/* another css */
+
+.row.content {
+    height: 95vh !important;
+    max-height: 100% !important;
+    min-width: 100% !important;
+    width: fit-content !important;
+}
+
+.no-padding {
+    padding: unset !important;
+}
+
+.no-margin-bottom {
+    margin-bottom: 0px !important;
+}
+
+.margin-top {
+    margin-top: 3px !important;
+}
+
+.margin-top-add-edit {
+    margin-top: 10px;
+}
+
+.take-max-width {
+    width: 100%;
+}
+
+.take-max-height {
+    height: 100% !important;
+}
+
+.take-55-height {
+    height: 55% !important;
+}
+
+
+/* another */
+
+.footer {
+    height: 5vh !important;
+    background-color: #555;
+    color: white;
+    padding: 15px;
+}
+
+.search-padding {
+    padding-top: 50px !important;
+}
+
+.form-control {
+    color: #808080;
+    font-size: 15px !important;
+    background-color: #dddddd !important;
+    border: 1px solid #8f8f8f !important;
+}
+
+::placeholder {
+    color: #444444 !important;
+}
+
+.form-div-max-content {
+    width: max-content;
+}
+
+.block-add-edit-poli {
+    overflow: hidden;
+    padding-top: 10px;
+    border-radius: 4px;
+    border: 2px solid #8f8f8f;
+    background-color: #1d1d1d !important;
+    margin-bottom: 15px;
+}
+
+.block-add-edit-mono {
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    overflow: hidden;
+    border-radius: 4px;
+    border: 2px solid #8f8f8f;
+    background-color: #1d1d1d !important;
+    margin-bottom: 15px;
+}
+
+textarea {
+    resize: none !important;
+}
+
+p.show-procedure {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 4px !important;
+    border: 2px solid #8f8f8f !important;
+    background-color: #dddddd !important;
+    padding: 7px !important;
+}
+
+.subject-input {
+    width: 100% !important;
+}
+
+select.form-control {
+    background-color: #3E73C7 !important;
+    border-color: #22519e !important;
+    color: #f0f0f0 !important;
+}
+
+select.form-control:hover {
+    background-color: #22519e !important;
+}
+
+label {
+    color: #8f8f8f !important;
+}
+
+select.form-control.fit-select {
+    background-color: #3192af !important;
+    border-color: #0f6e8b !important;
+}
+
+select.form-control.fit-select:hover {
+    background-color: #0f6e8b !important;
+}
+
+select.form-control.connector-select {
+    background-color: #6B568A !important;
+    border-color: #3b2261 !important;
+}
+
+select.form-control.connector-select:hover {
+    background-color: #3b2261 !important;
+}
