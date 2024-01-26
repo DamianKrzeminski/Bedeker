@@ -1,1 +1,1 @@
-<p>ssh root@&lt;ip&gt; [opcjonalne]-p &lt;port&gt;</p>
+<p><strong>ssh root@&lt;ip&gt; [opcjonalne]-p &lt;port&gt;</strong></p>

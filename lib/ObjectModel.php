@@ -28,7 +28,17 @@ class ObjectModel implements ObjectModelInterface{
     public function getAll($table){
         if(!isset($this->collection)){
             if($table == "routers" || $table == "servers" || $table == "contact_details"){
-                $query = $this->db->getDatabase()->prepare("SELECT *, $table.id AS id FROM $table AS $table INNER JOIN clients AS clients ON $table.client=clients.id GROUP BY $table.id");
+                $vars = $this->getObject($table)->getObjectVars();
+                $select = "";
+                foreach($vars as $varName => $varValue){
+                    if($varName == "client"){
+                        $select = $select . "clients.$varName AS $varName, ";
+                    }else{
+                        $select = $select . "$table.$varName AS $varName, ";
+                    }
+                }
+                $select = substr($select, 0, strlen($select) - 2);
+                $query = $this->db->getDatabase()->prepare("SELECT $select FROM $table AS $table INNER JOIN clients AS clients ON $table.client=clients.id GROUP BY $table.id");
                 $query->execute();
                 $this->collection = $query->fetchAll(PDO::FETCH_ASSOC);
             }else{
@@ -43,7 +53,36 @@ class ObjectModel implements ObjectModelInterface{
             return false;
         }
         if ($table == "routers" || $table == "servers" || $table == "contact_details") {
-            $query = $this->db->getDatabase()->prepare("SELECT *, $table.id AS id FROM $table AS $table INNER JOIN clients AS clients ON $table.client=clients.id WHERE $table.$column=:condition GROUP BY $table.id");
+            if($column == "client"){
+                $condition_table = "clients";
+            }else{
+                $condition_table = $table;
+            }
+            $vars = $this->getObject($table)->getObjectVars();
+            $select = "";
+            foreach($vars as $varName => $varValue){
+                if($varName == "client"){
+                    $select = $select . "clients.$varName AS $varName, ";
+                }else{
+                    $select = $select . "$table.$varName AS $varName, ";
+                }
+            }
+            $select = substr($select, 0, strlen($select) - 2);
+            $query = $this->db->getDatabase()->prepare("SELECT $select FROM $table AS $table INNER JOIN clients AS clients ON $table.client=clients.id WHERE $condition_table.$column=:condition GROUP BY $table.id");
+        }else{
+            $query = $this->db->getDatabase()->prepare("SELECT * FROM $table WHERE $column=:condition");
+        }
+        $query->bindParam(':condition', $condition);
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getByConditionForMove($table, $column, $condition){
+        if(!$condition){
+            return false;
+        }
+        if ($table == "routers" || $table == "servers" || $table == "contact_details") {
+            $query = $this->db->getDatabase()->prepare("SELECT * FROM $table WHERE $column=:condition");
         }else{
             $query = $this->db->getDatabase()->prepare("SELECT * FROM $table WHERE $column=:condition");
         }
@@ -223,13 +262,13 @@ class ObjectModel implements ObjectModelInterface{
     }
 
     public function moveToInUse($table, $id){
-        $post = $this->getByCondition($table, 'id', $id);
+        $post = $this->getByConditionForMove($table, 'id', $id);
         $post[0]['arch'] = '0';
         $this->save($table, $post[0]);
     }
 
     public function moveToArch($table, $id){
-        $post = $this->getByCondition($table, 'id', $id);
+        $post = $this->getByConditionForMove($table, 'id', $id);
         $post[0]['arch'] = '1';
         $this->save($table, $post[0]);
     }

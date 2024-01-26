@@ -1,1 +1,1 @@
-<p>/etc/init.d/nginx reload</p><p>LUB</p><p>systemctl reload nginx</p>
+<p>/etc/init.d/nginx reload</p><p>LUB</p><p><strong>systemctl reload nginx</strong></p><p>&nbsp;</p>

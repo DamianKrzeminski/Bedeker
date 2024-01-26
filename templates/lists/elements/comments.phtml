@@ -37,7 +37,7 @@
                     <th ng-if="comment.<?php echo $this->getAction();?>_id == object.id" ng-init="id=icrease()" scope="row" rowspan="2" class="id-comment take-content-size-of-cell " ng-bind="id"></th>
                     <td ng-if="comment.<?php echo $this->getAction();?>_id == object.id" ng-bind="comment.author"></td>
                     <td ng-if="comment.<?php echo $this->getAction();?>_id == object.id" ng-bind="comment.date"></td>
-                    <td ng-if="comment.<?php echo $this->getAction();?>_id == object.id" rowspan="2" class="comment-actions take-content-size-of-cell ">
+                    <td ng-if="comment.<?php echo $this->getAction();?>_id == object.id" rowspan="2" class="comment-actions take-content-size-of-cell">
                         <button ng-if="show_edit_comment!=comment.id && comment.arch == 0" ng-click="showEditComment(comment.id)" type="button" class="btn btn-info" title="Edytuj">
                             <span class="glyphicon glyphicon-pencil"></span>
                         </button>
@@ -60,7 +60,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td ng-if="comment.<?php echo $this->getAction();?>_id == object.id" colspan="2" class="comment-content" ng-bind="comment.content"></td>
+                    <td ng-if="comment.<?php echo $this->getAction();?>_id == object.id" colspan="2" class="comment-content border-right-add" ng-bind="comment.content"></td>
                  </tr>
                 <tr ng-if="show_edit_comment==comment.id">
                     <td colspan="<?php echo ($this->getAction() != 'routers') ? count($object)-3 : count($object)-5;?>">

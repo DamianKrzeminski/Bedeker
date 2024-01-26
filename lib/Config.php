@@ -5,8 +5,8 @@ class Config{
     private $host = 'localhost';
     private $dbname = 'bedeker';
     private $charset = 'utf8';
-    private $username = 'bedeker';
-    private $password = 'almuslupus2009';
+    private $username = 'root';
+    private $password = '';
     private static $instance;
 
     private function __construct(){}

@@ -91,6 +91,10 @@ td>table>tbody>tr>td {
     border-top: 0px !important;
 }
 
+.border-right-add {
+    border-right: 2px solid !important;
+}
+
 
 /* borders of table of comments */
 
